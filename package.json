@@ -36,6 +36,10 @@
     ],
     "parserOptions": {
       "project": "./tsconfig.json"
+    },
+    "rules": {
+      "import/prefer-default-export": "off",
+      "no-multiple-empty-lines": ["error", { "max": 2 }]
     }
   },
   "browserslist": {
