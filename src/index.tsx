@@ -10,7 +10,7 @@ import {
 import { store } from './app/store';
 import * as serviceWorker from './serviceWorker';
 import './index.scss';
-import Layout from './Components/Layout';
+import Layout from './components/Layout';
 import Home from './pages/Home';
 import NewsItem from './pages/NewsItem';
 

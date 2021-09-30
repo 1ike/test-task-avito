@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, useParams } from 'react-router-dom';
 import { Container, Card } from 'react-bootstrap';
 // TODO: может заменить стили на встроенные
 import styles from './Home.module.scss';
+import { useTitle } from '../../app/hooks';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,6 +67,9 @@ const stories = [
 const Delimiter = () => <span className="ms-2 me-2">|</span>;
 
 function Index() {
+  const { id } = useParams<{ id: string }>();
+  useTitle(() => `title ${id}`, [id]);
+
   return (
     <Container className={styles.content}>
       {stories.map((story) => (
