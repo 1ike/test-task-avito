@@ -12,7 +12,7 @@ import * as serviceWorker from './serviceWorker';
 import './index.scss';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import NewsItem from './pages/NewsItem';
+import NewsItem from './pages/Story';
 
 
 ReactDOM.render(
