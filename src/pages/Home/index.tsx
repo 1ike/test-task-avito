@@ -4,7 +4,7 @@ import { Container, Card } from 'react-bootstrap';
 // TODO: может заменить стили на встроенные
 import styles from './Home.module.scss';
 import { useTitle } from '../../app/hooks';
-import { useGetNewStoriesQuery } from '../../services/story';
+import { useGetNewStoriesQuery } from '../../features/story';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,6 +95,8 @@ function Index() {
                   month: 'long',
                   day: 'numeric',
                 })}
+                <Delimiter />
+                {story.kids && <span>Comments</span>}
               </Card.Subtitle>
             </Card.Body>
           </Card>

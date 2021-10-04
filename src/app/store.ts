@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 // import counterReducer from '../features/counter/counterSlice';
-import { storyApi } from '../services/story';
+import { storyApi } from '../features/story';
+// eslint-disable-next-line import/no-cycle
+import commentsReducer from '../features/comments/slice';
 
 export const store = configureStore({
-  reducer: { [storyApi.reducerPath]: storyApi.reducer },
+  reducer: { [storyApi.reducerPath]: storyApi.reducer, comments: commentsReducer },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(storyApi.middleware),
 });
 
