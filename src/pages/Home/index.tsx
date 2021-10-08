@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Card } from 'react-bootstrap';
+import { Card, Container } from 'react-bootstrap';
 // TODO: может заменить стили на встроенные
 import styles from './Home.module.scss';
 import { useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
+import DelimiterVertical from '../../components/DelimiterVertical';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,8 +66,6 @@ import { useGetNewStoriesQuery } from '../../features/story';
 //   },
 // ];
 
-const Delimiter = () => <span className="ms-2 me-2">|</span>;
-
 function Index() {
   useTitle('Hottest stories');
 
@@ -87,15 +86,15 @@ function Index() {
               <Card.Title>{story.title}</Card.Title>
               <Card.Subtitle>
                 {`${story.score} points`}
-                <Delimiter />
+                <DelimiterVertical />
                 {story.by}
-                <Delimiter />
+                <DelimiterVertical />
                 {(new Date(story.time)).toLocaleString('en', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 })}
-                <Delimiter />
+                <DelimiterVertical />
                 {story.kids && <span>Comments</span>}
               </Card.Subtitle>
             </Card.Body>
