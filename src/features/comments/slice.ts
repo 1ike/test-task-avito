@@ -11,9 +11,23 @@ export interface CommentsStateInterface {
 }
 
 export const fetchComments = createAsyncThunk('comments/fetchAll', async (commentIds: string[]) => {
-  const comments = await commentAPI.fetchByIds(commentIds);
-  console.log('comments = ', comments);
-  return comments;
+  const fetchAllComments = async (
+    commentsAcc: CommentInterface[], ids:string[],
+  ): Promise<CommentInterface[]> => {
+    if (ids.length === 0) return commentsAcc;
+
+    const comments = await commentAPI.fetchByIds(ids);
+    const filteredComments = comments.filter((comment) => !comment.deleted);
+    const childrenIds = filteredComments.reduce(
+      (acc, comment) => (comment.kids?.length > 0 ? [...acc, ...comment.kids] : acc),
+      [],
+    );
+
+    console.log('childrenIds = ', childrenIds);
+    return fetchAllComments([...commentsAcc, ...filteredComments], childrenIds);
+  };
+
+  return fetchAllComments([], commentIds);
 });
 
 const commentsAdapter = createEntityAdapter<any>();
@@ -44,12 +58,43 @@ export const selectStoryComments = createSelector(
   selectCommentEntities,
   (_: RootState, rootCommentIds: string[]) => rootCommentIds,
   (commentEntities: any, rootCommentIds) => {
-    console.log('comments = ', commentEntities);
+    // console.log('comments = ', commentEntities);
     const entities = rootCommentIds.reduce(
       (acc, id) => (commentEntities[id] ? { ...acc, [id]: commentEntities[id] } : acc),
       {},
     );
-    console.log('entities = ', entities);
+    // console.log('entities = ', entities);
     return { ids: rootCommentIds, entities };
+  },
+);
+export const selectStoryCommentsQty = createSelector(
+  selectCommentEntities,
+  (_: RootState, rootCommentIds: string[]) => rootCommentIds,
+  (commentEntities: any, rootCommentIds) => {
+    const filterDeleted = (id: string) => commentEntities[id] && !commentEntities[id]?.deleted;
+
+    const filteredCommentsFilteredIds = rootCommentIds.filter(filterDeleted);
+
+    console.log('commentEntities = ', commentEntities);
+    console.log('rootCommentIds = ', rootCommentIds);
+    console.log('filteredCommentsFilteredIds = ', filteredCommentsFilteredIds);
+
+    const getCommentsQty = (acc: number, ids: string[]): number => {
+      if (ids.length === 0) return acc;
+
+      const childrenIds = ids.reduce(
+        (idsAcc: string[], id: string) => {
+          const kids = commentEntities[id]?.kids?.filter(filterDeleted) || [];
+          return kids.length > 0 ? [...idsAcc, ...kids] : idsAcc;
+        },
+        [],
+      );
+
+      return childrenIds.length + getCommentsQty(acc, childrenIds);
+    };
+
+    const qty = getCommentsQty(filteredCommentsFilteredIds.length, filteredCommentsFilteredIds);
+
+    return qty;
   },
 );

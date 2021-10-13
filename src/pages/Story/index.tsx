@@ -7,7 +7,9 @@ import { isEmpty } from 'lodash';
 import styles from './Story.module.scss';
 import { useTitle, useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
-import { fetchComments, selectStoryComments, CommentsStateInterface } from '../../features/comments/slice';
+import {
+  fetchComments, selectStoryComments, CommentsStateInterface, selectStoryCommentsQty,
+} from '../../features/comments/slice';
 import DelimiterVertical from '../../components/DelimiterVertical';
 
 
@@ -34,6 +36,9 @@ function Index() {
   const { ids, entities: rootComments }: CommentsStateInterface = useAppSelector(
     (state) => selectStoryComments(state, rootCommentIds),
   );
+  const commentsQty: number = useAppSelector(
+    (state) => selectStoryCommentsQty(state, rootCommentIds),
+  );
 
   console.log('rootComments = ', rootComments);
   return (
@@ -53,7 +58,7 @@ function Index() {
         <>
           <h2 className="mt-5 mb-4">
             Comments (
-            {/* {commentsQty} */}
+            {commentsQty}
             )
           </h2>
           {ids.map((commentId: string) => (
