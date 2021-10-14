@@ -2,16 +2,17 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Card } from 'react-bootstrap';
 import sanitizeHtml from 'sanitize-html';
-import { isEmpty } from 'lodash';
+import { isEmpty, memoize } from 'lodash';
 
 import styles from './Story.module.scss';
 import { useTitle, useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import {
-  fetchComments, selectStoryComments, CommentsStateInterface, selectStoryCommentsQty,
+  fetchComments, selectStoryCommentsQty, selectAllComments, CommentInterface,
 } from '../../features/comments/slice';
 import DelimiterVertical from '../../components/DelimiterVertical';
 
+// const renderComments = (comments, ids) => 111;
 
 function Index() {
   const { id } = useParams<{ id: string }>();
@@ -24,18 +25,32 @@ function Index() {
     },
   );
 
-  const rootCommentIds: string[] = React.useMemo(() => story.kids || [], [story]);
-  // const expandRootCommentInitialState = rootCommentIds
-  //   .map((commentId:string) => ({ [commentId]: false }));
-  // const [commentsState, setCommentsState] = React.useState(expandRootCommentInitialState);
+  type StateInterface = { [id: number]: CommentInterface };
+  const rootCommentIds: number[] = React.useMemo(() => story.kids || [], [story]);
+  const expandRootCommentInitialState: StateInterface = rootCommentIds
+    .reduce((acc, commentId: number) => ({ ...acc, [commentId]: false }), {});
+  const [rootCommentsState, setRootCommentsState] = React.useState(expandRootCommentInitialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onExpandRootCommentClick = React.useCallback(memoize(
+    (commentId: number) => () => setRootCommentsState(
+      (prevState) => ({ ...prevState, [commentId]: !prevState[commentId] }),
+    ),
+  ),
+  []);
+
 
   const dispatch = useAppDispatch();
   React.useEffect(() => {
     dispatch(fetchComments(rootCommentIds));
   }, [dispatch, rootCommentIds]);
-  const { ids, entities: rootComments }: CommentsStateInterface = useAppSelector(
-    (state) => selectStoryComments(state, rootCommentIds),
+  // const { ids, entities: rootComments }: CommentsStateInterface = useAppSelector(
+  //   (state) => selectStoryComments(state, rootCommentIds),
+  // );
+  const comments = useAppSelector(selectAllComments);
+  const rootComments: any = React.useMemo(
+    () => comments.filter((comment) => comment.parent === Number(id)), [id, comments],
   );
+  // const { ids, entities: rootComments }: any = useAppSelector(selectAllComments);
   const commentsQty: number = useAppSelector(
     (state) => selectStoryCommentsQty(state, rootCommentIds),
   );
@@ -61,27 +76,37 @@ function Index() {
             {commentsQty}
             )
           </h2>
-          {ids.map((commentId: string) => (
-            <Card bg="light" key={commentId} className="mb-3">
+          {rootComments.map((comment: CommentInterface) => (
+            <Card bg="light" key={comment.id} className="mb-3">
               <Card.Body>
                 <Card.Subtitle className={`text-muted ${styles.comment__header}`}>
-                  {rootComments[commentId].by}
+                  {comment.by}
                   <DelimiterVertical />
-                  {(new Date(rootComments[commentId].time)).toLocaleString('en', {
+                  {(new Date(comment.time)).toLocaleString('en', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
                   <DelimiterVertical />
-                  <Button variant="link" className="text-decoration-none" size="sm">[show answers]</Button>
+                  <Button
+                    variant="link"
+                    className="text-decoration-none"
+                    size="sm"
+                    onClick={onExpandRootCommentClick(comment.id)}
+                  >
+                    [
+                    {rootCommentsState[comment.id] ? 'hide answers' : 'show answers' }
+                    ]
+                  </Button>
                 </Card.Subtitle>
                 <Card.Text
                   className="mt-2"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(rootComments[commentId].text) }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(comment.text) }}
                 />
               </Card.Body>
             </Card>
           ))}
+          {}
         </>
       )}
     </div>
