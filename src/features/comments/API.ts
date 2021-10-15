@@ -1,7 +1,9 @@
 import { HACKER_NEWS_API_URL } from '../../config';
+import { IDs } from '../../types';
+import type { CommentInterface } from './slice';
 
 
-const fetchByIds = (commentIds: number[]) => {
+const fetchByIds = (commentIds: IDs): Promise<CommentInterface[]> => {
   console.log('commentIds = ', commentIds);
   const promises = commentIds.map((id) => fetch(
     `${HACKER_NEWS_API_URL}item/${id}.json`,

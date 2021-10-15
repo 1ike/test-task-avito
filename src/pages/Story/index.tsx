@@ -1,18 +1,19 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Card } from 'react-bootstrap';
-import sanitizeHtml from 'sanitize-html';
 import { isEmpty, memoize } from 'lodash';
-
-import styles from './Story.module.scss';
-import { useTitle, useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import {
-  fetchComments, selectStoryCommentsQty, selectAllComments, CommentInterface,
+  CommentInterface,
+  fetchComments,
+  selectAllComments,
+  selectStoryCommentsQty,
 } from '../../features/comments/slice';
-import DelimiterVertical from '../../components/DelimiterVertical';
+import { ID, IDs } from '../../types';
+import { Comment } from './Comment';
 
-// const renderComments = (comments, ids) => 111;
+
+export interface StateInterface { [id: number]: Boolean }
 
 function Index() {
   const { id } = useParams<{ id: string }>();
@@ -25,14 +26,13 @@ function Index() {
     },
   );
 
-  type StateInterface = { [id: number]: CommentInterface };
-  const rootCommentIds: number[] = React.useMemo(() => story.kids || [], [story]);
+  const rootCommentIds: IDs = React.useMemo(() => story.kids || [], [story]);
   const expandRootCommentInitialState: StateInterface = rootCommentIds
-    .reduce((acc, commentId: number) => ({ ...acc, [commentId]: false }), {});
+    .reduce((acc, commentId: ID) => ({ ...acc, [commentId]: false }), {});
   const [rootCommentsState, setRootCommentsState] = React.useState(expandRootCommentInitialState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onExpandRootCommentClick = React.useCallback(memoize(
-    (commentId: number) => () => setRootCommentsState(
+    (commentId: ID) => () => setRootCommentsState(
       (prevState) => ({ ...prevState, [commentId]: !prevState[commentId] }),
     ),
   ),
@@ -43,19 +43,17 @@ function Index() {
   React.useEffect(() => {
     dispatch(fetchComments(rootCommentIds));
   }, [dispatch, rootCommentIds]);
-  // const { ids, entities: rootComments }: CommentsStateInterface = useAppSelector(
-  //   (state) => selectStoryComments(state, rootCommentIds),
-  // );
+
+
   const comments = useAppSelector(selectAllComments);
   const rootComments: any = React.useMemo(
     () => comments.filter((comment) => comment.parent === Number(id)), [id, comments],
   );
-  // const { ids, entities: rootComments }: any = useAppSelector(selectAllComments);
-  const commentsQty: number = useAppSelector(
+
+  const commentsQty: ID = useAppSelector(
     (state) => selectStoryCommentsQty(state, rootCommentIds),
   );
 
-  console.log('rootComments = ', rootComments);
   return (
     <div className="container pt-2">
       <h1 className="mt-4 mb-4">{story.title}</h1>
@@ -77,34 +75,13 @@ function Index() {
             )
           </h2>
           {rootComments.map((comment: CommentInterface) => (
-            <Card bg="light" key={comment.id} className="mb-3">
-              <Card.Body>
-                <Card.Subtitle className={`text-muted ${styles.comment__header}`}>
-                  {comment.by}
-                  <DelimiterVertical />
-                  {(new Date(comment.time)).toLocaleString('en', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                  <DelimiterVertical />
-                  <Button
-                    variant="link"
-                    className="text-decoration-none"
-                    size="sm"
-                    onClick={onExpandRootCommentClick(comment.id)}
-                  >
-                    [
-                    {rootCommentsState[comment.id] ? 'hide answers' : 'show answers' }
-                    ]
-                  </Button>
-                </Card.Subtitle>
-                <Card.Text
-                  className="mt-2"
-                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(comment.text) }}
-                />
-              </Card.Body>
-            </Card>
+            <Comment
+              key={comment.id}
+              comment={comment}
+              onClick={onExpandRootCommentClick(comment.id)}
+              rootCommentsState={rootCommentsState}
+              comments={comments}
+            />
           ))}
           {}
         </>
