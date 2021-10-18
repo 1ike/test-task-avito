@@ -13,6 +13,7 @@ export interface CommentInterface {
   text: string;
   time: number;
   kids?: IDs;
+  parent?: ID;
   deleted?: Boolean;
 }
 
