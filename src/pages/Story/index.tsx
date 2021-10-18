@@ -1,6 +1,12 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, memoize } from 'lodash';
+import {
+  Button, OverlayTrigger, Tooltip, TooltipProps,
+} from 'react-bootstrap';
+import { BsArrowRepeat } from 'react-icons/bs';
+
+import classNames from 'classnames';
 import { useAppDispatch, useAppSelector, useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import {
@@ -11,9 +17,17 @@ import {
 } from '../../features/comments/slice';
 import { ID, IDs } from '../../types';
 import { Comment } from './Comment';
+import styles from './Story.module.scss';
 
 
 export interface StateInterface { [id: number]: Boolean }
+
+const renderRefreshTooltip = (props: TooltipProps) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <Tooltip id="button-tooltip" {...props}>
+    Refresh comments
+  </Tooltip>
+);
 
 function Index() {
   const { id } = useParams<{ id: string }>();
@@ -69,11 +83,18 @@ function Index() {
       </dl>
       {isEmpty(rootComments) ? null : (
         <>
-          <h2 className="mt-5 mb-4">
-            Comments (
-            {commentsQty}
-            )
-          </h2>
+          <div className="d-flex align-items-center mt-5 mb-4">
+            <h2>
+              Comments (
+              {commentsQty}
+              )
+            </h2>
+            <OverlayTrigger overlay={renderRefreshTooltip}>
+              <Button className="ms-5">
+                <BsArrowRepeat className={classNames(styles.refreshIcon)} />
+              </Button>
+            </OverlayTrigger>
+          </div>
           {rootComments.map((comment: CommentInterface) => (
             <Comment
               key={comment.id}

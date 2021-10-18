@@ -1,4 +1,11 @@
-.comment__header {
-  display: flex;
-  align-items: baseline;
+$iconSize: 25px;
+
+.refreshIcon {
+ width: $iconSize;
+ height: $iconSize;
 }
+
+//.comment__header {
+//  display: flex;
+//  align-items: baseline;
+//}
