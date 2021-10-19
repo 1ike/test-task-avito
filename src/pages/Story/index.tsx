@@ -1,12 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, memoize } from 'lodash';
-import {
-  Button, OverlayTrigger, Tooltip, TooltipProps,
-} from 'react-bootstrap';
-import { BsArrowRepeat } from 'react-icons/bs';
-
-import classNames from 'classnames';
 import { useAppDispatch, useAppSelector, useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import {
@@ -17,17 +11,12 @@ import {
 } from '../../features/comments/slice';
 import { ID, IDs } from '../../types';
 import { Comment } from './Comment';
-import styles from './Story.module.scss';
+import RefreshButton from '../../components/RefreshButton';
+import Layout from '../../components/Layout';
+import NavbarComponent from './NavbarComponent';
 
 
 export interface StateInterface { [id: number]: Boolean }
-
-const renderRefreshTooltip = (props: TooltipProps) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <Tooltip id="button-tooltip" {...props}>
-    Refresh comments
-  </Tooltip>
-);
 
 function Index() {
   const { id } = useParams<{ id: string }>();
@@ -69,45 +58,43 @@ function Index() {
   );
 
   return (
-    <div className="container pt-2">
-      <h1 className="mt-4 mb-4">{story.title}</h1>
-      <dl className="row">
-        <dt className="col-sm-1">link</dt>
-        <dd className="col-sm-11">{story.url}</dd>
+    <Layout navbarComponent={NavbarComponent}>
+      <div className="container pt-2">
+        <h1 className="mt-4 mb-4">{story.title}</h1>
+        <dl className="row">
+          <dt className="col-sm-1">link</dt>
+          <dd className="col-sm-11">{story.url}</dd>
 
-        <dt className="col-sm-1">Author</dt>
-        <dd className="col-sm-11">{story.by}</dd>
+          <dt className="col-sm-1">Author</dt>
+          <dd className="col-sm-11">{story.by}</dd>
 
-        <dt className="col-sm-1">Date</dt>
-        <dd className="col-sm-11">{story.time}</dd>
-      </dl>
-      {isEmpty(rootComments) ? null : (
-        <>
-          <div className="d-flex align-items-center mt-5 mb-4">
-            <h2>
-              Comments (
-              {commentsQty}
-              )
-            </h2>
-            <OverlayTrigger overlay={renderRefreshTooltip}>
-              <Button className="ms-5">
-                <BsArrowRepeat className={classNames(styles.refreshIcon)} />
-              </Button>
-            </OverlayTrigger>
-          </div>
-          {rootComments.map((comment: CommentInterface) => (
-            <Comment
-              key={comment.id}
-              comment={comment}
-              onClick={onExpandRootCommentClick(comment.id)}
-              rootCommentsState={rootCommentsState}
-              comments={comments}
-            />
-          ))}
-          {}
-        </>
-      )}
-    </div>
+          <dt className="col-sm-1">Date</dt>
+          <dd className="col-sm-11">{story.time}</dd>
+        </dl>
+        {isEmpty(rootComments) ? null : (
+          <>
+            <div className="d-flex align-items-center mt-5 mb-4">
+              <h2>
+                Comments (
+                {commentsQty}
+                )
+              </h2>
+              <RefreshButton tooltipText="Refresh comments" />
+            </div>
+            {rootComments.map((comment: CommentInterface) => (
+              <Comment
+                key={comment.id}
+                comment={comment}
+                onClick={onExpandRootCommentClick(comment.id)}
+                rootCommentsState={rootCommentsState}
+                comments={comments}
+              />
+            ))}
+            {}
+          </>
+        )}
+      </div>
+    </Layout>
   );
 }
 

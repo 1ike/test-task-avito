@@ -5,7 +5,9 @@ import { Card, Container } from 'react-bootstrap';
 import styles from './Home.module.scss';
 import { useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
+import Layout from '../../components/Layout';
 import DelimiterVertical from '../../components/DelimiterVertical';
+import NavbarComponent from './NavbarComponent';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -74,34 +76,36 @@ function Index() {
   // const { data, error, isLoading } = useGetNewStoriesQuery(null);
 
   return (
-    <Container className={styles.content}>
-      {stories.map((story) => (
-        <Link
-          key={story.id}
-          to={`/${story.id}`}
-          className="text-start text-decoration-none d-block mb-2"
-        >
-          <Card bg="light">
-            <Card.Body>
-              <Card.Title>{story.title}</Card.Title>
-              <Card.Subtitle>
-                {`${story.score} points`}
-                <DelimiterVertical />
-                {story.by}
-                <DelimiterVertical />
-                {(new Date(story.time)).toLocaleString('en', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                <DelimiterVertical />
-                {story.kids && <span>Comments</span>}
-              </Card.Subtitle>
-            </Card.Body>
-          </Card>
-        </Link>
-      ))}
-    </Container>
+    <Layout navbarComponent={NavbarComponent}>
+      <Container className={styles.content}>
+        {stories.map((story) => (
+          <Link
+            key={story.id}
+            to={`/${story.id}`}
+            className="text-start text-decoration-none d-block mb-2"
+          >
+            <Card bg="light">
+              <Card.Body>
+                <Card.Title>{story.title}</Card.Title>
+                <Card.Subtitle>
+                  {`${story.score} points`}
+                  <DelimiterVertical />
+                  {story.by}
+                  <DelimiterVertical />
+                  {(new Date(story.time)).toLocaleString('en', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                  <DelimiterVertical />
+                  {story.kids && <span>Comments</span>}
+                </Card.Subtitle>
+              </Card.Body>
+            </Card>
+          </Link>
+        ))}
+      </Container>
+    </Layout>
   );
 }
 

@@ -10,7 +10,6 @@ import {
 import { store } from './app/store';
 import * as serviceWorker from './serviceWorker';
 import './index.scss';
-import Layout from './components/Layout';
 import Home from './pages/Home';
 import NewsItem from './pages/Story';
 
@@ -19,12 +18,10 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
-        <Layout>
-          <Switch>
-            <Route exact component={Home} path="/" />
-            <Route component={NewsItem} path="/:id" />
-          </Switch>
-        </Layout>
+        <Switch>
+          <Route exact component={Home} path="/" />
+          <Route component={NewsItem} path="/:id" />
+        </Switch>
       </Router>
     </Provider>
   </React.StrictMode>,
