@@ -4,7 +4,7 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 
-import { HACKER_NEWS_API_URL } from '../config';
+import { HACKER_NEWS_API_URL, STORIES_QTY } from '../config';
 // import { Story } from './types';
 
 const data = [
@@ -129,7 +129,7 @@ export const storyApi = createApi({
 
         const ids = idsResult.data as string[];
 
-        const storyPromises = ids.slice(0, 10).map((id) => fetchWithBQ(`item/${id}.json`));
+        const storyPromises = ids.slice(0, STORIES_QTY).map((id) => fetchWithBQ(`item/${id}.json`));
 
         const results = await Promise.all(storyPromises);
         const error = results.find((result) => result.error);

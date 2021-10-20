@@ -1,7 +1,8 @@
-$paddingVertical: 20px;
+$paddingVertical: 30px;
 
 .content {
   padding-top: $paddingVertical;
+  padding-bottom: $paddingVertical;
 
   &--loading {
     display: flex;
