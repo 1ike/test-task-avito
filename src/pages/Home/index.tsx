@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Container } from 'react-bootstrap';
-// TODO: может заменить стили на встроенные
+import { Card, Container, Spinner } from 'react-bootstrap';
+
+import classNames from 'classnames';
 import styles from './Home.module.scss';
 import { useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import Layout from '../../components/Layout';
 import DelimiterVertical from '../../components/DelimiterVertical';
 import NavbarComponent from './NavbarComponent';
+import { POLLING_INTERVAL } from '../../config';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,7 +73,11 @@ import NavbarComponent from './NavbarComponent';
 function Index() {
   useTitle('Hottest stories');
 
-  const { data: stories = [], refetch, isFetching } = useGetNewStoriesQuery();
+  const {
+    data: stories = [], refetch, isFetching, isLoading,
+  } = useGetNewStoriesQuery(undefined, {
+    pollingInterval: POLLING_INTERVAL,
+  });
   console.log(stories);
 
   const NavbarComponentWrapper = () => (
@@ -80,33 +86,37 @@ function Index() {
 
   return (
     <Layout navbarComponent={NavbarComponentWrapper}>
-      <Container className={styles.content}>
-        {stories.map((story) => (
-          <Link
-            key={story.id}
-            to={`/${story.id}`}
-            className="text-start text-decoration-none d-block mb-2"
-          >
-            <Card bg="light">
-              <Card.Body>
-                <Card.Title>{story.title}</Card.Title>
-                <Card.Subtitle>
-                  {`${story.score} points`}
-                  <DelimiterVertical />
-                  {story.by}
-                  <DelimiterVertical />
-                  {(new Date(story.time)).toLocaleString('en', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                  <DelimiterVertical />
-                  {story.kids && <span>Comments</span>}
-                </Card.Subtitle>
-              </Card.Body>
-            </Card>
-          </Link>
-        ))}
+      <Container
+        className={classNames(styles.content, { [styles['content--loading']]: isLoading })}
+      >
+        { isLoading
+          ? <Spinner animation="border" variant="primary" />
+          : stories.map((story) => (
+            <Link
+              key={story.id}
+              to={`/${story.id}`}
+              className="text-start text-decoration-none d-block mb-2"
+            >
+              <Card bg="light">
+                <Card.Body>
+                  <Card.Title>{story.title}</Card.Title>
+                  <Card.Subtitle>
+                    {`${story.score} points`}
+                    <DelimiterVertical />
+                    {story.by}
+                    <DelimiterVertical />
+                    {(new Date(story.time)).toLocaleString('en', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                    <DelimiterVertical />
+                    {story.kids && <span>Comments</span>}
+                  </Card.Subtitle>
+                </Card.Body>
+              </Card>
+            </Link>
+          ))}
       </Container>
     </Layout>
   );

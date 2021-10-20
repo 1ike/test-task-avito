@@ -4,6 +4,9 @@ import {
 } from 'react-bootstrap';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { Placement } from 'react-bootstrap/types';
+import classNames from 'classnames';
+
+import styles from './RefreshButton.module.scss';
 
 
 const iconSize = 25;
@@ -38,7 +41,7 @@ const RefreshButton = (props: PropsInterface) => {
   return (
     <OverlayTrigger placement={tooltipPlacement} overlay={renderRefreshTooltip}>
       <Button className="ms-5" onClick={onClick} disabled={disabled}>
-        <BsArrowRepeat style={iconStyle} />
+        <BsArrowRepeat style={iconStyle} className={classNames({ [styles.rotating]: disabled })} />
       </Button>
     </OverlayTrigger>
   );
