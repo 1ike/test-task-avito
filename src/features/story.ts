@@ -134,6 +134,11 @@ export const storyApi = createApi({
         const results = await Promise.all(storyPromises);
         const error = results.find((result) => result.error);
 
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 1000);
+        });
 
         return error
           ? { error: error as FetchBaseQueryError }

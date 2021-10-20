@@ -4,17 +4,12 @@ import { createSelector } from 'reselect';
 import commentAPI from './API';
 import type { RootState } from '../../app/store';
 import { getCommentsByIds } from '../../lib';
-import { ID, IDs } from '../../types';
+import { ID, IDs, BaseEntityInterface } from '../../types';
 
 
-export interface CommentInterface {
-  id: ID;
-  by: string;
+export interface CommentInterface extends BaseEntityInterface {
   text: string;
-  time: number;
-  kids?: IDs;
   parent?: ID;
-  deleted?: Boolean;
 }
 
 export interface CommentsStateInterface {
@@ -35,7 +30,7 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
         const { kids = [] } = comment;
         return kids.length > 0 ? [...acc, ...kids] : acc;
       },
-      <IDs>[],
+      [] as IDs,
     );
 
     console.log('childrenIds = ', childrenIds);

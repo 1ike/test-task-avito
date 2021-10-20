@@ -17,6 +17,7 @@ interface PropsInterface {
   tooltipText?: string;
   tooltipPlacement?: Placement;
   onClick?: () => void;
+  disabled?: boolean;
 }
 /* eslint-enable react/require-default-props */
 
@@ -25,6 +26,7 @@ const RefreshButton = (props: PropsInterface) => {
     tooltipText = 'Refresh',
     tooltipPlacement = 'top',
     onClick,
+    disabled,
   } = props;
   const renderRefreshTooltip = (tooltipProps: TooltipProps) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -35,7 +37,7 @@ const RefreshButton = (props: PropsInterface) => {
 
   return (
     <OverlayTrigger placement={tooltipPlacement} overlay={renderRefreshTooltip}>
-      <Button className="ms-5" onClick={onClick}>
+      <Button className="ms-5" onClick={onClick} disabled={disabled}>
         <BsArrowRepeat style={iconStyle} />
       </Button>
     </OverlayTrigger>

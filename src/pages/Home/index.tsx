@@ -71,12 +71,15 @@ import NavbarComponent from './NavbarComponent';
 function Index() {
   useTitle('Hottest stories');
 
-  const { data: stories = [] } = useGetNewStoriesQuery();
+  const { data: stories = [], refetch, isFetching } = useGetNewStoriesQuery();
   console.log(stories);
-  // const { data, error, isLoading } = useGetNewStoriesQuery(null);
+
+  const NavbarComponentWrapper = () => (
+    <NavbarComponent onClick={refetch} isFetching={isFetching} />
+  );
 
   return (
-    <Layout navbarComponent={NavbarComponent}>
+    <Layout navbarComponent={NavbarComponentWrapper}>
       <Container className={styles.content}>
         {stories.map((story) => (
           <Link
