@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, memoize } from 'lodash';
+
 import { useAppDispatch, useAppSelector, useTitle } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import {
   CommentInterface,
   fetchComments,
-  selectAllComments,
+  selectAllComments, selectIsCommentsLoading,
   selectStoryCommentsQty,
 } from '../../features/comments/slice';
 import { ID, IDs } from '../../types';
@@ -14,6 +15,7 @@ import { Comment } from './Comment';
 import RefreshButton from '../../components/RefreshButton';
 import Layout from '../../components/Layout';
 import NavbarComponent from './NavbarComponent';
+import { POLLING_INTERVAL } from '../../config';
 
 
 export interface StateInterface { [id: number]: Boolean }
@@ -43,9 +45,23 @@ function Index() {
 
 
   const dispatch = useAppDispatch();
+  const refreshComments = useCallback(
+    () => dispatch(fetchComments(rootCommentIds)),
+    [dispatch, rootCommentIds],
+  );
+
   React.useEffect(() => {
-    dispatch(fetchComments(rootCommentIds));
-  }, [dispatch, rootCommentIds]);
+    let timer: ReturnType<typeof setTimeout>;
+    const refresh = () => {
+      refreshComments();
+      timer = setTimeout(() => {
+        refresh();
+      }, POLLING_INTERVAL);
+    };
+    refresh();
+
+    return () => clearTimeout(timer);
+  }, [refreshComments]);
 
 
   const comments = useAppSelector(selectAllComments);
@@ -56,6 +72,7 @@ function Index() {
   const commentsQty: ID = useAppSelector(
     (state) => selectStoryCommentsQty(state, rootCommentIds),
   );
+  const isCommentsLoading: boolean = useAppSelector(selectIsCommentsLoading);
 
   return (
     <Layout navbarComponent={NavbarComponent}>
@@ -79,7 +96,11 @@ function Index() {
                 {commentsQty}
                 )
               </h2>
-              <RefreshButton tooltipText="Refresh comments" />
+              <RefreshButton
+                onClick={refreshComments}
+                disabled={isCommentsLoading}
+                tooltipText="Refresh comments"
+              />
             </div>
             {rootComments.map((comment: CommentInterface) => (
               <Comment

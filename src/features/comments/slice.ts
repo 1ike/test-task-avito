@@ -40,16 +40,37 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
   return fetchAllComments([], commentIds);
 });
 
+enum RequestStatus {
+  Idle = 'idle',
+  Pending = 'pending',
+  Fulfilled = 'fulfilled',
+  Rejected = 'rejected',
+}
+
 const commentsAdapter = createEntityAdapter<any>();
-const initialState = commentsAdapter.getInitialState();
+const initialState = commentsAdapter.getInitialState({
+  loading: RequestStatus.Idle,
+});
 
 export const slice = createSlice({
   name: 'comments',
   initialState,
+  /* eslint-disable no-param-reassign */
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchComments.fulfilled, commentsAdapter.upsertMany);
+    builder.addCase(fetchComments.pending, (state) => {
+      if (state.loading === RequestStatus.Idle) {
+        state.loading = RequestStatus.Pending;
+      }
+    });
+    builder.addCase(fetchComments.fulfilled, (state, action) => {
+      if (state.loading === RequestStatus.Pending) {
+        commentsAdapter.upsertMany(state, action.payload);
+        state.loading = RequestStatus.Idle;
+      }
+    });
   },
+  /* eslint-enable no-param-reassign */
 });
 
 const { reducer } = slice;
@@ -99,4 +120,8 @@ export const selectStoryCommentsQty = createSelector(
 
     return qty;
   },
+);
+
+export const selectIsCommentsLoading = (state: RootState) => (
+  state.comments.loading === RequestStatus.Pending
 );
