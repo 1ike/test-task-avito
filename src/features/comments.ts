@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 
-import commentAPI from './API';
-import type { RootState } from '../../app/store';
-import { getCommentsByIds } from '../../lib';
-import { ID, IDs, BaseEntityInterface } from '../../types';
+import commentAPI from '../app/API';
+import type { RootState } from '../app/store';
+import { getCommentsByIds } from '../app/lib';
+import { ID, IDs, BaseEntityInterface } from '../app/types';
 
 
 export interface CommentInterface extends BaseEntityInterface {

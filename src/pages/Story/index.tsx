@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, memoize } from 'lodash';
 
@@ -9,13 +9,13 @@ import {
   fetchComments,
   selectAllComments, selectIsCommentsLoading,
   selectStoryCommentsQty,
-} from '../../features/comments/slice';
-import { ID, IDs } from '../../types';
+} from '../../features/comments';
+import { ID, IDs } from '../../app/types';
 import { Comment } from './Comment';
 import RefreshButton from '../../components/RefreshButton';
 import Layout from '../../components/Layout';
 import NavbarComponent from './NavbarComponent';
-import { POLLING_INTERVAL } from '../../config';
+import { POLLING_INTERVAL } from '../../app/config';
 
 
 export interface StateInterface { [id: number]: Boolean }
@@ -24,19 +24,21 @@ function Index() {
   const { id } = useParams<{ id: string }>();
   useTitle(() => `title ${id}`, [id]);
 
-  const { story } = useGetNewStoriesQuery(
+  const { story: cachedStory } = useGetNewStoriesQuery(
     undefined,
     {
       selectFromResult: ({ data }) => ({ story: data?.find((item) => item.id === Number(id)) }),
     },
   );
 
-  const rootCommentIds: IDs = React.useMemo(() => story.kids || [], [story]);
+  const [story, setStory] = useState(cachedStory);
+
+  const rootCommentIds: IDs = useMemo(() => story?.kids || [], [story]);
   const expandRootCommentInitialState: StateInterface = rootCommentIds
     .reduce((acc, commentId: ID) => ({ ...acc, [commentId]: false }), {});
-  const [rootCommentsState, setRootCommentsState] = React.useState(expandRootCommentInitialState);
+  const [rootCommentsState, setRootCommentsState] = useState(expandRootCommentInitialState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onExpandRootCommentClick = React.useCallback(memoize(
+  const onExpandRootCommentClick = useCallback(memoize(
     (commentId: ID) => () => setRootCommentsState(
       (prevState) => ({ ...prevState, [commentId]: !prevState[commentId] }),
     ),
@@ -51,6 +53,23 @@ function Index() {
   );
 
   React.useEffect(() => {
+    if (!story) {
+      console.log('story = ', story);
+      setStory({
+        by: 'atombender',
+        id: 28723520,
+        kids: [
+          28723615,
+          28723609,
+        ],
+        score: 7,
+        time: 1633123356,
+        title: 'Ozy Media Says It Is Shutting Down',
+        url: 'https://www.nytimes.com/2021/10/01/business/media/ozy-media.html',
+      });
+
+      return undefined;
+    }
     let timer: ReturnType<typeof setTimeout>;
     const refresh = () => {
       refreshComments();
@@ -61,7 +80,7 @@ function Index() {
     refresh();
 
     return () => clearTimeout(timer);
-  }, [refreshComments]);
+  }, [refreshComments, story]);
 
 
   const comments = useAppSelector(selectAllComments);
@@ -73,6 +92,8 @@ function Index() {
     (state) => selectStoryCommentsQty(state, rootCommentIds),
   );
   const isCommentsLoading: boolean = useAppSelector(selectIsCommentsLoading);
+
+  if (!story) return null;
 
   return (
     <Layout navbarComponent={NavbarComponent}>

@@ -3,7 +3,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 // import counterReducer from '../features/counter/counterSlice';
 import { storyApi } from '../features/story';
 // eslint-disable-next-line import/no-cycle
-import commentsReducer from '../features/comments/slice';
+import commentsReducer from '../features/comments';
 
 export const store = configureStore({
   reducer: { [storyApi.reducerPath]: storyApi.reducer, comments: commentsReducer },

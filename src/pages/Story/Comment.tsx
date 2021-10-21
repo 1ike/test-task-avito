@@ -3,10 +3,10 @@ import sanitizeHtml from 'sanitize-html';
 import React from 'react';
 
 import classNames from 'classnames';
-import { CommentInterface } from '../../features/comments/slice';
+import { CommentInterface } from '../../features/comments';
 import styles from './Story.module.scss';
 import DelimiterVertical from '../../components/DelimiterVertical';
-import { ID, IDs } from '../../types';
+import { ID, IDs } from '../../app/types';
 import type { StateInterface } from './index';
 
 

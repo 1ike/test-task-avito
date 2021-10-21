@@ -1,6 +1,6 @@
-import { HACKER_NEWS_API_URL } from '../../config';
-import { IDs } from '../../types';
-import type { CommentInterface } from './slice';
+import { HACKER_NEWS_API_URL } from './config';
+import { IDs } from './types';
+import type { CommentInterface } from '../features/comments';
 
 
 const fetchByIds = (commentIds: IDs): Promise<CommentInterface[]> => {
