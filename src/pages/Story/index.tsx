@@ -22,6 +22,7 @@ import NavbarComponent from './NavbarComponent';
 import { POLLING_INTERVAL } from '../../app/config';
 import styles from './Story.module.scss';
 import API from '../../app/API';
+import { formatDate } from '../../app/lib';
 
 
 const ContentWrapper = ({ children }: { children: ReactNode }) => (
@@ -120,7 +121,7 @@ function Index() {
         <dd className="col-sm-11">{story.by}</dd>
 
         <dt className="col-sm-1">Date</dt>
-        <dd className="col-sm-11">{story.time}</dd>
+        <dd className="col-sm-11">{formatDate(story.time)}</dd>
       </dl>
       {isEmpty(rootComments) ? null : (
         <>

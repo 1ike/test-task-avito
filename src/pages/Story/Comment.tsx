@@ -8,6 +8,7 @@ import styles from './Story.module.scss';
 import DelimiterVertical from '../../components/DelimiterVertical';
 import { ID, IDs } from '../../app/types';
 import type { StateInterface } from './index';
+import { formatDate } from '../../app/lib';
 
 
 const renderComments = (comments: CommentInterface[], expand: Boolean, kids: IDs = []) => {
@@ -54,11 +55,7 @@ export function Comment(props: PropsInterface) {
         <Card.Subtitle className={`text-muted ${styles.comment__header}`}>
           {comment.by}
           <DelimiterVertical />
-          {(new Date(comment.time)).toLocaleString('en', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
+          {formatDate(comment.time)}
           {isRootCommentHasChildren && (
             <>
               <DelimiterVertical />

@@ -12,6 +12,7 @@ import Layout from '../../components/Layout';
 import DelimiterVertical from '../../components/DelimiterVertical';
 import NavbarComponent from './NavbarComponent';
 import { POLLING_INTERVAL, STORIES_QTY_PER_PAGE, STORIES_QTY } from '../../app/config';
+import { formatDate } from '../../app/lib';
 
 
 function Index() {
@@ -62,11 +63,7 @@ function Index() {
                         <DelimiterVertical />
                         {story.by}
                         <DelimiterVertical />
-                        {(new Date(story.time)).toLocaleString('en', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
+                        {formatDate(story.time)}
                         <DelimiterVertical />
                         {story.kids && <span>Comments</span>}
                       </Card.Subtitle>
