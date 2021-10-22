@@ -7,7 +7,7 @@ import {
 import { HACKER_NEWS_API_URL, STORIES_QTY } from '../app/config';
 import { BaseEntityInterface } from '../app/types';
 
-const data: Story[] = [
+const data: StoryInterface[] = [
   {
     by: 'tosh',
     id: 28723656,
@@ -95,7 +95,7 @@ const data: Story[] = [
 ];
 
 
-interface Story extends BaseEntityInterface {
+export interface StoryInterface extends BaseEntityInterface {
   title: string;
   score: number;
   url?: string;
@@ -106,9 +106,8 @@ export const storyApi = createApi({
   reducerPath: 'storyApi',
   baseQuery: fetchBaseQuery({ baseUrl: HACKER_NEWS_API_URL }),
   endpoints: (builder) => ({
-    getNewStories: builder.query<Story[], void>({
+    getNewStories: builder.query<StoryInterface[], void>({
       async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-        // get a random user
         const idsResult = await fetchWithBQ('newstories.json');
         if (idsResult.error) return { error: idsResult.error as FetchBaseQueryError };
 

@@ -1,10 +1,11 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
+import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 
-import commentAPI from '../app/API';
+import API from '../app/API';
 import type { RootState } from '../app/store';
 import { getCommentsByIds } from '../app/lib';
-import { ID, IDs, BaseEntityInterface } from '../app/types';
+import { BaseEntityInterface, ID, IDs } from '../app/types';
+import { RequestStatus } from './shared';
 
 
 export interface CommentInterface extends BaseEntityInterface {
@@ -23,7 +24,7 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
   ): Promise<CommentInterface[]> => {
     if (ids.length === 0) return commentsAcc;
 
-    const comments: CommentInterface[] = await commentAPI.fetchByIds(ids);
+    const comments: CommentInterface[] = await API.fetchByIds(ids);
     const filteredComments = comments.filter((comment) => !comment.deleted);
     const childrenIds: IDs = filteredComments.reduce(
       (acc, comment) => {
@@ -33,19 +34,11 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
       [] as IDs,
     );
 
-    console.log('childrenIds = ', childrenIds);
     return fetchAllComments([...commentsAcc, ...filteredComments], childrenIds);
   };
 
   return fetchAllComments([], commentIds);
 });
-
-enum RequestStatus {
-  Idle = 'idle',
-  Pending = 'pending',
-  Fulfilled = 'fulfilled',
-  Rejected = 'rejected',
-}
 
 const commentsAdapter = createEntityAdapter<any>();
 const initialState = commentsAdapter.getInitialState({

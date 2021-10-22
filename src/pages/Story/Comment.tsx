@@ -3,7 +3,7 @@ import sanitizeHtml from 'sanitize-html';
 import React from 'react';
 
 import classNames from 'classnames';
-import { CommentInterface } from '../../features/comments';
+import { CommentInterface } from '../../features/comment';
 import styles from './Story.module.scss';
 import DelimiterVertical from '../../components/DelimiterVertical';
 import { ID, IDs } from '../../app/types';
