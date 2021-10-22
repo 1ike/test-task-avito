@@ -3,7 +3,6 @@ import { createSelector } from 'reselect';
 
 import API from '../app/API';
 import type { RootState } from '../app/store';
-import { getCommentsByIds } from '../app/lib';
 import { BaseEntityInterface, ID, IDs } from '../app/types';
 import { RequestStatus } from './shared';
 
@@ -13,9 +12,13 @@ export interface CommentInterface extends BaseEntityInterface {
   parent?: ID;
 }
 
+export interface CommentEntitiesInterface {
+  [id: string]: CommentInterface
+}
+
 export interface CommentsStateInterface {
   ids: string[];
-  entities: { [id: string]: CommentInterface };
+  entities: CommentEntitiesInterface;
 }
 
 export const fetchComments = createAsyncThunk('comments/fetchAll', async (commentIds: IDs) => {
@@ -40,7 +43,7 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
   return fetchAllComments([], commentIds);
 });
 
-const commentsAdapter = createEntityAdapter<any>();
+const commentsAdapter = createEntityAdapter<CommentInterface>();
 const initialState = commentsAdapter.getInitialState({
   loading: RequestStatus.Idle,
 });
@@ -81,19 +84,22 @@ export const {
 export const selectStoryComments = createSelector(
   selectCommentEntities,
   (_: RootState, rootCommentIds: IDs) => rootCommentIds,
-  getCommentsByIds,
+  (commentEntities, ids) => {
+    const entities = ids.reduce(
+      (acc, id) => (commentEntities[id] ? { ...acc, [id]: commentEntities[id] } : acc),
+      {},
+    );
+
+    return { ids, entities };
+  },
 );
 export const selectStoryCommentsQty = createSelector(
   selectCommentEntities,
   (_: RootState, rootCommentIds: IDs) => rootCommentIds,
-  (commentEntities: any, rootCommentIds) => {
+  (commentEntities, rootCommentIds) => {
     const filterDeleted = (id: ID) => commentEntities[id] && !commentEntities[id]?.deleted;
 
     const filteredCommentsFilteredIds = rootCommentIds.filter(filterDeleted);
-
-    console.log('commentEntities = ', commentEntities);
-    console.log('rootCommentIds = ', rootCommentIds);
-    console.log('filteredCommentsFilteredIds = ', filteredCommentsFilteredIds);
 
     const getCommentsQty = (acc: ID, ids: IDs): number => {
       if (ids.length === 0) return acc;

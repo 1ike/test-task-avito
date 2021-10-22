@@ -24,7 +24,6 @@ function Index() {
   } = useGetNewStoriesQuery(undefined, {
     pollingInterval: POLLING_INTERVAL,
   });
-  console.log(stories);
 
   const displayedStories = React.useMemo(
     () => stories.slice(0, displayedQty),

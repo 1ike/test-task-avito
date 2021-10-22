@@ -70,23 +70,11 @@ function Index() {
 
   React.useEffect(() => {
     if (!story) {
-      // setTimeout(() => setStory({
-      //   by: 'atombender',
-      //   id: 28723520,
-      //   kids: [
-      //     28723615,
-      //     28723609,
-      //   ],
-      //   score: 7,
-      //   time: 1633123356,
-      //   title: 'Ozy Media Says It Is Shutting Down',
-      //   url: 'https://www.nytimes.com/2021/10/01/business/media/ozy-media.html',
-      // }),
-      // 1000);
       API.fetchByIds([id]).then(([s]) => setStory(s as StoryInterface));
 
       return undefined;
     }
+
     let timer: ReturnType<typeof setTimeout>;
     const refresh = () => {
       refreshComments();
@@ -101,7 +89,7 @@ function Index() {
 
 
   const comments = useAppSelector(selectAllComments);
-  const rootComments: any = React.useMemo(
+  const rootComments: CommentInterface[] = React.useMemo(
     () => comments.filter((comment) => comment.parent === Number(id)), [id, comments],
   );
 
