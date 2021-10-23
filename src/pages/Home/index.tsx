@@ -64,8 +64,12 @@ function Index() {
                         {story.by}
                         <DelimiterVertical />
                         {formatDate(story.time)}
-                        <DelimiterVertical />
-                        {story.kids && <span>Comments</span>}
+                        {story.kids && (
+                          <>
+                            <DelimiterVertical />
+                            <span>Comments</span>
+                          </>
+                        )}
                       </Card.Subtitle>
                     </Card.Body>
                   </Card>

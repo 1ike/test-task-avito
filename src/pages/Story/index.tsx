@@ -6,6 +6,7 @@ import { isEmpty, memoize } from 'lodash';
 
 import { Spinner } from 'react-bootstrap';
 
+import sanitizeHtml from 'sanitize-html';
 import { useAppDispatch, useAppSelector, useTitle } from '../../app/hooks';
 import { StoryInterface, useGetNewStoriesQuery } from '../../features/story';
 import {
@@ -35,7 +36,7 @@ const ContentWrapper = ({ children }: { children: ReactNode }) => (
 
 export interface StateInterface { [id: number]: Boolean }
 
-function Index() {
+function Story() {
   const { id: idFromParams } = useParams<{ id: string }>();
   const id = Number(idFromParams);
 
@@ -111,17 +112,31 @@ function Index() {
 
   return (
     <ContentWrapper>
-
       <h1 className="mt-4 mb-4">{story.title}</h1>
       <dl className="row">
-        <dt className="col-sm-1">link</dt>
-        <dd className="col-sm-11">{story.url}</dd>
-
         <dt className="col-sm-1">Author</dt>
         <dd className="col-sm-11">{story.by}</dd>
 
         <dt className="col-sm-1">Date</dt>
         <dd className="col-sm-11">{formatDate(story.time)}</dd>
+
+        {story.url && (
+          <>
+            <dt className="col-sm-1">link</dt>
+            <dd className="col-sm-11">{story.url}</dd>
+          </>
+        )}
+
+        {story.text && (
+          <>
+            <dt className="col-sm-1">Text</dt>
+            <dd
+              className="col-sm-11"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(story.text) }}
+            />
+          </>
+        )}
+
       </dl>
       {isEmpty(rootComments) ? null : (
         <>
@@ -153,4 +168,4 @@ function Index() {
   );
 }
 
-export default Index;
+export default Story;
