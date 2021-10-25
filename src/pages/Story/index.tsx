@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, memoize } from 'lodash';
-
 import { Spinner } from 'react-bootstrap';
 
 import sanitizeHtml from 'sanitize-html';
@@ -127,15 +126,18 @@ function Story() {
           </>
         )}
 
-        {story.text && (
-          <>
-            <dt className="col-sm-1">Text</dt>
-            <dd
-              className="col-sm-11"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(story.text) }}
-            />
-          </>
-        )}
+        {/* eslint-disable react/no-danger */
+          story.text && (
+            <>
+              <dt className="col-sm-1">Text</dt>
+              <dd
+                className="col-sm-11"
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(story.text) }}
+              />
+            </>
+          )
+          /* eslint-enable react/no-danger */
+        }
 
       </dl>
       {isEmpty(rootComments) ? null : (
