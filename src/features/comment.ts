@@ -12,22 +12,13 @@ export interface CommentInterface extends BaseEntityInterface {
   parent?: ID;
 }
 
-export interface CommentEntitiesInterface {
-  [id: string]: CommentInterface
-}
-
-export interface CommentsStateInterface {
-  ids: string[];
-  entities: CommentEntitiesInterface;
-}
-
 export const fetchComments = createAsyncThunk('comments/fetchAll', async (commentIds: IDs) => {
   const fetchAllComments = async (
     commentsAcc: CommentInterface[], ids:IDs,
   ): Promise<CommentInterface[]> => {
     if (ids.length === 0) return commentsAcc;
 
-    const comments: CommentInterface[] = await API.fetchByIds(ids);
+    const comments = (await API.fetchByIds(ids)) as CommentInterface[];
     const filteredComments = comments.filter((comment) => !comment.deleted);
     const childrenIds: IDs = filteredComments.reduce(
       (acc, comment) => {
