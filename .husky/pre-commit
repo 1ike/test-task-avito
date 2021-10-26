@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd packages/react
-npm run lint-staged
+npm run lint-staged -w ./packages/react
