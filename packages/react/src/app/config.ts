@@ -1,6 +1,17 @@
-export const HACKER_NEWS_API_URL = 'https://hacker-news.firebaseio.com/v0/';
+const {
+  REACT_APP_HACKER_NEWS_API_URL,
+  REACT_APP_POLLING_INTERVAL,
+  REACT_APP_STORIES_QTY,
+  REACT_APP_STORIES_QTY_PER_PAGE,
+  REACT_APP_DEPLOY_URL_PREFIX,
+} = process.env;
 
-export const POLLING_INTERVAL = 60000;
 
-export const STORIES_QTY = 100;
-export const STORIES_QTY_PER_PAGE = 10;
+export const HACKER_NEWS_API_URL = REACT_APP_HACKER_NEWS_API_URL || 'https://hacker-news.firebaseio.com/v0/';
+
+export const POLLING_INTERVAL = Number(REACT_APP_POLLING_INTERVAL) || 60000;
+
+export const STORIES_QTY = Number(REACT_APP_STORIES_QTY) || 100;
+export const STORIES_QTY_PER_PAGE = Number(REACT_APP_STORIES_QTY_PER_PAGE) || 10;
+
+export const PREFIX = REACT_APP_DEPLOY_URL_PREFIX ? `/${REACT_APP_DEPLOY_URL_PREFIX}` : '';

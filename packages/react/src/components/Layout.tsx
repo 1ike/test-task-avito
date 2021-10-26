@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { addPrefixTo } from '../app/lib';
 
 
 interface PropsInterface {
@@ -15,7 +16,7 @@ const Layout = ({ children, navbarComponent: NavbarComponent }: PropsInterface) 
       <Container>
         <Navbar.Brand>
           <Link
-            to="/"
+            to={addPrefixTo('/')}
             className="fs-2 ms-3 text-muted text-decoration-none"
           >
             Avito test task

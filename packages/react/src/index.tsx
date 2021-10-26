@@ -12,6 +12,7 @@ import * as serviceWorker from './serviceWorker';
 import './index.scss';
 import Home from './pages/Home';
 import NewsItem from './pages/Story';
+import { addPrefixTo } from './app/lib';
 
 
 ReactDOM.render(
@@ -19,8 +20,8 @@ ReactDOM.render(
     <Provider store={store}>
       <Router>
         <Switch>
-          <Route exact component={Home} path="/" />
-          <Route component={NewsItem} path="/:id" />
+          <Route exact component={Home} path={addPrefixTo('/')} />
+          <Route component={NewsItem} path={addPrefixTo('/:id')} />
         </Switch>
       </Router>
     </Provider>
