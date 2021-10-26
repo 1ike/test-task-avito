@@ -4,9 +4,14 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { storyApi } from '../features/story';
 // eslint-disable-next-line import/no-cycle
 import commentsReducer from '../features/comment';
+import numberOfDisplayedStoriesReducer, { numberOfDisplayedStoriesName } from '../features/numberOfDisplayedStories';
 
 export const store = configureStore({
-  reducer: { [storyApi.reducerPath]: storyApi.reducer, comments: commentsReducer },
+  reducer: {
+    [storyApi.reducerPath]: storyApi.reducer,
+    comments: commentsReducer,
+    [numberOfDisplayedStoriesName]: numberOfDisplayedStoriesReducer,
+  },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(storyApi.middleware),
 });
 

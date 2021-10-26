@@ -1,24 +1,26 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button, Card, Container, Spinner,
 } from 'react-bootstrap';
 
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 import styles from './Home.module.scss';
-import { useTitle } from '../../app/hooks';
+import { useTitle, useAppDispatch } from '../../app/hooks';
 import { useGetNewStoriesQuery } from '../../features/story';
 import Layout from '../../components/Layout';
 import DelimiterVertical from '../../components/DelimiterVertical';
 import NavbarComponent from './NavbarComponent';
-import { POLLING_INTERVAL, STORIES_QTY_PER_PAGE, STORIES_QTY } from '../../app/config';
+import { POLLING_INTERVAL, STORIES_QTY } from '../../app/config';
 import { addPrefixTo, formatDate } from '../../app/lib';
+import { selectNumberOfDisplayedStories, increaseNumberOfDisplayedStories } from '../../features/numberOfDisplayedStories';
 
 
 function Index() {
   useTitle('Hottest stories');
 
-  const [displayedQty, setDisplayedQty] = useState(STORIES_QTY_PER_PAGE);
+  const displayedQty = useSelector(selectNumberOfDisplayedStories);
 
   const {
     data: stories = [], refetch, isFetching, isLoading,
@@ -31,9 +33,10 @@ function Index() {
     [displayedQty, stories],
   );
 
+  const dispatch = useAppDispatch();
   const showMore = useCallback(
-    () => setDisplayedQty((prev) => prev + STORIES_QTY_PER_PAGE),
-    [],
+    () => dispatch(increaseNumberOfDisplayedStories()),
+    [dispatch],
   );
 
   const NavbarComponentWrapper = () => (
