@@ -122,7 +122,7 @@ function Story() {
         {story.url && (
           <>
             <dt className="col-sm-1">link</dt>
-            <dd className="col-sm-11">{story.url}</dd>
+            <dd className="col-sm-11"><a href={story.url}>{story.url}</a></dd>
           </>
         )}
 
