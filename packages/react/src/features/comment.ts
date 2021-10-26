@@ -19,7 +19,7 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
     if (ids.length === 0) return commentsAcc;
 
     const comments = (await API.fetchByIds(ids)) as CommentInterface[];
-    const filteredComments = comments.filter((comment) => !comment.deleted);
+    const filteredComments = comments.filter((comment) => comment && !comment.deleted);
     const childrenIds: IDs = filteredComments.reduce(
       (acc, comment) => {
         const { kids = [] } = comment;

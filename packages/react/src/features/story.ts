@@ -40,9 +40,10 @@ export const storyApi = createApi({
         return error
           ? { error: error as FetchBaseQueryError }
           : {
-            data: results.map(
-              ({ data: story }) => ({ ...story, time: transformDate(story?.time || 0) }),
-            ) as StoryInterface[],
+            data: results
+              .filter(({ data }) => Boolean(data))
+              .map(({ data: story }) => (
+                { ...story, time: transformDate(story?.time || 0) })) as StoryInterface[],
           };
       },
     }),
