@@ -9,7 +9,12 @@ const fetchByIds = (ids: IDs): Promise<(StoryInterface | CommentInterface)[]> =>
   const promises = ids.map((id) => fetch(
     `${HACKER_NEWS_API_URL}item/${id}.json`,
     { method: 'GET' },
-  ).then((response) => response.json())
+  )
+    .then((response) => {
+      if (response.ok) return response.json();
+
+      throw new Error(`Error with status code ${response.status}`);
+    })
     .then((data) => ({ ...data, time: transformDate(data.time) })));
 
   return Promise.all(promises);

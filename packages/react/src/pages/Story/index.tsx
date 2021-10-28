@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { isEmpty, memoize } from 'lodash';
-import { Spinner } from 'react-bootstrap';
+import { Alert, Spinner } from 'react-bootstrap';
 
 import sanitizeHtml from 'sanitize-html';
 import { useAppDispatch, useAppSelector, useTitle } from '../../app/hooks';
@@ -49,6 +49,7 @@ function Story() {
   );
 
   const [story, setStory] = useState(cachedStory);
+  const [storyError, setStoryError] = useState(null);
 
   const rootCommentIds: IDs = useMemo(() => story?.kids || [], [story]);
   const expandRootCommentInitialState: StateInterface = rootCommentIds
@@ -71,7 +72,12 @@ function Story() {
 
   React.useEffect(() => {
     if (!story) {
-      API.fetchByIds([id]).then(([s]) => setStory(s as StoryInterface));
+      API.fetchByIds([id])
+        .then(([s]) => setStory(s as StoryInterface))
+        .catch((error) => {
+          setStoryError(error.message);
+          console.error('Log somewhere error', error);
+        });
 
       return undefined;
     }
@@ -103,7 +109,16 @@ function Story() {
     return (
       <ContentWrapper>
         <div className={styles['story--loading']}>
-          <Spinner animation="border" variant="primary" />
+          { storyError
+            ? (
+              <Alert variant="danger">
+                {`Something goes wrong: \u00A0${storyError}`}
+                <br />
+                <br />
+                Try to refresh the page.
+              </Alert>
+            )
+            : <Spinner animation="border" variant="primary" />}
         </div>
       </ContentWrapper>
     );

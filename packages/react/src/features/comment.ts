@@ -18,7 +18,12 @@ export const fetchComments = createAsyncThunk('comments/fetchAll', async (commen
   ): Promise<CommentInterface[]> => {
     if (ids.length === 0) return commentsAcc;
 
-    const comments = (await API.fetchByIds(ids)) as CommentInterface[];
+    let comments: CommentInterface[] = [];
+    try {
+      comments = (await API.fetchByIds(ids)) as CommentInterface[];
+    } catch (error) {
+      console.error('Log somewhere error', error);
+    }
     const filteredComments = comments.filter((comment) => comment && !comment.deleted);
     const childrenIds: IDs = filteredComments.reduce(
       (acc, comment) => {

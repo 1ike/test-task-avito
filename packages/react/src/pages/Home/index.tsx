@@ -78,7 +78,7 @@ function Index() {
                   </Card>
                 </Link>
               ))}
-              {displayedQty < STORIES_QTY && (
+              {displayedStories.length !== 0 && (displayedQty < STORIES_QTY) && (
                 <Button
                   variant="outline-primary"
                   onClick={showMore}
