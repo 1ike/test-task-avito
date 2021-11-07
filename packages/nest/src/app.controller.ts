@@ -1,12 +1,19 @@
 import { Controller, Get } from '@nestjs/common';
+
 import { AppService } from './app.service';
+import { ID, idParamName } from './app.decorator';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('newstories.json')
+  getNewestStories(): string {
+    return this.appService.getNewestStories();
+  }
+
+  @Get(`item/:${idParamName}.json`)
+  getItem(@ID() id: string): string {
+    return this.appService.getItem(id);
   }
 }
