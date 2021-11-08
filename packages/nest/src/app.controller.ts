@@ -8,7 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('newstories.json')
-  getNewestStories(): string {
+  async getNewestStories(): Promise<any[]> {
     return this.appService.getNewestStories();
   }
 
