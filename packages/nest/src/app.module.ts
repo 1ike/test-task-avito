@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
@@ -6,7 +7,10 @@ import { AppService } from './app.service';
 import configuration from './config/configuration';
 
 @Module({
-  imports: [ConfigModule.forRoot({ load: [configuration], isGlobal: true })],
+  imports: [
+    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
+    HttpModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
