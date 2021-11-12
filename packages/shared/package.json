@@ -2,7 +2,6 @@
   "name": "@test-task-avito/shared",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
   "publishConfig": {
     "access": "public"
   },
