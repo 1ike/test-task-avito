@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ValidationService } from './validation/validation.service';
 import configuration from './config/configuration';
 
 @Module({
@@ -12,6 +13,6 @@ import configuration from './config/configuration';
     HttpModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ValidationService],
 })
 export class AppModule {}

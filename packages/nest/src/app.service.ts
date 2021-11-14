@@ -7,12 +7,16 @@ import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { ID, IDs, StoryInterface } from '@test-task-avito/shared';
 import { ConfigVarNames } from './config/configuration';
 import { CommentInterface } from './../../shared/index.d';
+import { ValidationService } from './validation/validation.service';
+
+const transformDate = (time: number) => time * 1000;
 
 @Injectable()
 export class AppService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly validationService: ValidationService,
   ) {}
 
   getNewestStories(
@@ -32,7 +36,9 @@ export class AppService {
         ),
       ),
       map((rawData: AxiosResponse<StoryInterface>[]) =>
-        rawData.map(({ data }) => data).filter(this.isValidItem),
+        rawData
+          .map(({ data }) => ({ ...data, time: transformDate(data?.time) }))
+          .filter((story) => this.validationService.validateEntity(story)),
       ),
       catchError((error) => {
         console.log('log stories error somewhere: ', error);
@@ -59,10 +65,6 @@ export class AppService {
       );
 
     return storyIds$;
-  }
-
-  private isValidItem(item: StoryInterface | CommentInterface): boolean {
-    return Boolean(item);
   }
 
   getItem(id: string): string {
