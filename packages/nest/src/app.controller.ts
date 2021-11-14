@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import { Observable } from 'rxjs';
 
+import { StoryInterface } from '@test-task-avito/shared';
 import { AppService } from './app.service';
 import { ID, idParamName } from './app.decorator';
 
@@ -8,8 +10,10 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('newstories.json')
-  async getNewestStories(): Promise<any[]> {
-    return this.appService.getNewestStories();
+  getNewestStories(
+    @Query('qty', ParseIntPipe) qty: number,
+  ): Observable<StoryInterface[]> {
+    return this.appService.getNewestStories(qty);
   }
 
   @Get(`item/:${idParamName}.json`)
