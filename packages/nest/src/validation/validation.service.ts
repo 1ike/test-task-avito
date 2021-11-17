@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ValidationEntities, schemas } from './schemas';
+
+import { schemas, ValidationEntities } from './schemas';
 
 @Injectable()
 export class ValidationService {
-  validateEntity(entity, name = ValidationEntities.Story) {
+  validateEntity<T>(entity: T, name: ValidationEntities) {
     if (!Boolean(entity)) return false;
 
     return !Boolean(schemas[name].validate(entity).error);

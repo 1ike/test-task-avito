@@ -5,7 +5,7 @@ const baseIdSchema = Joi.number().integer();
 const baseEntitySchema = Joi.object({
   id: baseIdSchema.required(),
   by: Joi.string().required(),
-  time: Joi.date().timestamp('javascript').required(),
+  time: Joi.date().timestamp('unix').required(),
   kids: Joi.array().items(Joi.number().integer()),
   deleted: Joi.boolean(),
 }).unknown();

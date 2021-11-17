@@ -1,7 +1,7 @@
 import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { StoryInterface } from '@test-task-avito/shared';
+import { StoryInterface, CommentInterface } from '@test-task-avito/shared';
 import { AppService } from './app.service';
 import { ID, idParamName } from './app.decorator';
 
@@ -17,7 +17,7 @@ export class AppController {
   }
 
   @Get(`item/:${idParamName}.json`)
-  getItem(@ID() id: string): string {
-    return this.appService.getItem(id);
+  getComment(@ID() id: number): Observable<CommentInterface> {
+    return this.appService.getComment(id);
   }
 }

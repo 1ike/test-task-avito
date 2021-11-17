@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
 import { ConfigService } from '@nestjs/config';
-import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  switchMap,
+  defaultIfEmpty,
+} from 'rxjs';
 
-import { ID, IDs, StoryInterface } from '@test-task-avito/shared';
+import {
+  ID,
+  IDs,
+  StoryInterface,
+  CommentInterface,
+} from '@test-task-avito/shared';
 import { ConfigVarNames } from './config/configuration';
-import { CommentInterface } from './../../shared/index.d';
 import { ValidationService } from './validation/validation.service';
-
-const transformDate = (time: number) => time * 1000;
+import { ValidationEntities } from './validation/schemas';
 
 @Injectable()
 export class AppService {
@@ -25,23 +35,19 @@ export class AppService {
     const storyIds$ = this.getNewestStoryIds(storiesQty);
     const stories$ = storyIds$.pipe(
       switchMap((ids) =>
-        forkJoin(
-          ids.map((id: ID) =>
-            this.httpService.get(
-              `${this.configService.get(
-                ConfigVarNames.HACKER_NEWS_API_URL,
-              )}/item/${id}.json`,
-            ),
+        forkJoin(ids.map((id) => this.getItem<StoryInterface>(id))),
+      ),
+      map((stories) =>
+        stories.filter((story) =>
+          this.validationService.validateEntity(
+            story,
+            ValidationEntities.Story,
           ),
         ),
       ),
-      map((rawData: AxiosResponse<StoryInterface>[]) =>
-        rawData
-          .map(({ data }) => ({ ...data, time: transformDate(data?.time) }))
-          .filter((story) => this.validationService.validateEntity(story)),
-      ),
+      defaultIfEmpty([]),
       catchError((error) => {
-        console.log('log stories error somewhere: ', error);
+        console.error('log Stories error somewhere: ', error);
         return of(error);
       }),
     );
@@ -59,7 +65,7 @@ export class AppService {
       .pipe(
         map(({ data }) => data.slice(0, storiesQty)),
         catchError((error) => {
-          console.log('log story ids error somewhere: ', error);
+          console.error('log Story ids error somewhere: ', error);
           return of(error);
         }),
       );
@@ -67,7 +73,27 @@ export class AppService {
     return storyIds$;
   }
 
-  getItem(id: string): string {
-    return id;
+  private getItem<T>(id: ID): Observable<T> {
+    const item$ = this.httpService
+      .get(
+        `${this.configService.get(
+          ConfigVarNames.HACKER_NEWS_API_URL,
+        )}/item/${id}.json`,
+      )
+      .pipe(
+        map(({ data }) => data),
+        catchError((error) => {
+          console.error(`log entity with id "${id}" error somewhere: `, error);
+          return of(error);
+        }),
+      );
+
+    return item$;
+  }
+
+  getComment(id: ID): Observable<CommentInterface> {
+    const comment$ = this.getItem<CommentInterface>(id);
+
+    return comment$;
   }
 }
