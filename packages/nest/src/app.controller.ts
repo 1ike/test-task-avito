@@ -1,4 +1,4 @@
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 import { StoryInterface, CommentInterface } from '@test-task-avito/shared';
@@ -11,9 +11,9 @@ export class AppController {
 
   @Get('newstories.json')
   getNewestStories(
-    @Query('qty', ParseIntPipe) qty: number,
+    @Query() query: { qty?: number },
   ): Observable<StoryInterface[]> {
-    return this.appService.getNewestStories(qty);
+    return this.appService.getNewestStories(query.qty);
   }
 
   @Get(`item/:${idParamName}.json`)
