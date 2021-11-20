@@ -1,4 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run lint-staged -w ./packages/react
+yarn workspace @test-task-avito/react lint-staged
+
+yarn workspace @test-task-avito/nest lint
