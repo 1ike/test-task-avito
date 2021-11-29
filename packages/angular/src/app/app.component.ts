@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
         filter((event) => event instanceof NavigationEnd),
         map(() => {
           let child = this.activatedRoute.firstChild;
-          console.log('child = ', child);
+
           if (!child) return null;
 
           while (child.firstChild) {

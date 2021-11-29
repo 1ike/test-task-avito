@@ -3,6 +3,6 @@
 
 yarn workspace @test-task-avito/react lint-staged
 
-yarn workspace @test-task-avito/nest lint
+yarn workspace @test-task-avito/nest lint-staged
 
-yarn workspace @test-task-avito/angular fix
+yarn workspace @test-task-avito/angular lint-staged
