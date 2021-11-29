@@ -8,6 +8,7 @@ export const environment = {
   POLLING_INTERVAL: 60000,
   STORIES_QTY: 100,
   STORIES_QTY_PER_PAGE: 10,
+  TITLE_POSTFIX: 'Avito test task',
 };
 
 /*
