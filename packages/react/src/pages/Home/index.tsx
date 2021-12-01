@@ -13,7 +13,7 @@ import Layout from '../../components/Layout';
 import DelimiterVertical from '../../components/DelimiterVertical';
 import NavbarComponent from './NavbarComponent';
 import { POLLING_INTERVAL, STORIES_QTY } from '../../app/config';
-import { addPrefixTo, formatDate } from '../../app/lib';
+import { formatDate } from '../../app/lib';
 import { selectNumberOfDisplayedStories, increaseNumberOfDisplayedStories } from '../../features/numberOfDisplayedStories';
 
 
@@ -55,7 +55,7 @@ function Index() {
               {displayedStories.map((story) => (
                 <Link
                   key={story.id}
-                  to={addPrefixTo(`/${story.id}`)}
+                  to={`/${story.id}`}
                   className="text-start text-decoration-none d-block mb-2"
                 >
                   <Card bg="light">

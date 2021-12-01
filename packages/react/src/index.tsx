@@ -5,6 +5,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
 
 import { store } from './app/store';
@@ -12,16 +13,17 @@ import * as serviceWorker from './serviceWorker';
 import './index.scss';
 import Home from './pages/Home';
 import NewsItem from './pages/Story';
-import { addPrefixTo } from './app/lib';
+import { PREFIX } from './app/config';
 
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>
+      <Router basename={`/${PREFIX}`}>
         <Switch>
-          <Route exact component={Home} path={addPrefixTo('/')} />
-          <Route component={NewsItem} path={addPrefixTo('/:id')} />
+          <Route path="/" component={Home} exact />
+          <Route path="/:id" component={NewsItem} exact />
+          <Redirect to="/" />
         </Switch>
       </Router>
     </Provider>

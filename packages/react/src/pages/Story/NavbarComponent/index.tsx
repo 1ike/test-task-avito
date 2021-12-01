@@ -4,12 +4,11 @@ import { Button } from 'react-bootstrap';
 import { BsHouseDoor } from 'react-icons/bs';
 
 import styles from './NavbarComponent.module.scss';
-import { addPrefixTo } from '../../../app/lib';
 
 
 const NavbarComponent = () => (
   <Link
-    to={addPrefixTo('/')}
+    to="/"
     className="fs-2 ms-3 justify-content-end"
   >
     <Button className={styles.button} variant="light">
