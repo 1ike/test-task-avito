@@ -5,6 +5,7 @@ import {
   IsBoolean,
   ArrayUnique,
   Min,
+  Max,
   IsOptional,
 } from 'class-validator';
 
@@ -16,7 +17,8 @@ import {
 } from '@test-task-avito/shared';
 
 
-const timeLengthMin = 10000000000;
+const timeLengthMin = 1000000000;
+const timeLengthMax = 9999999999;
 
 export class StorySchema implements StoryInterface {
   @IsInt()
@@ -28,6 +30,7 @@ export class StorySchema implements StoryInterface {
 
   @IsInt()
   @Min(timeLengthMin)
+  @Max(timeLengthMax)
     time!: number;
 
   @IsOptional()
@@ -65,6 +68,7 @@ export class CommentSchema implements CommentInterface {
 
   @IsInt()
   @Min(timeLengthMin)
+  @Max(timeLengthMax)
     time!: number;
 
   @IsOptional()
@@ -85,12 +89,12 @@ export class CommentSchema implements CommentInterface {
     parent?: ID;
 }
 
-export enum ValidationEntities {
+export enum EntityNames  {
   Story = 'Story',
   Comment = 'Comment',
 }
 
 export const schemas = {
-  [ValidationEntities.Story]: StorySchema,
-  [ValidationEntities.Comment]: CommentSchema,
+  [EntityNames.Story]: StorySchema,
+  [EntityNames.Comment]: CommentSchema,
 };
