@@ -1,9 +1,16 @@
-<p>home works!</p>
-<mat-card>
-  <mat-card-title>Actions Buttons</mat-card-title>
-  <mat-card-subtitle>Start</mat-card-subtitle>
-  <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
-  </mat-card-actions>
-</mat-card>
+<a routerLink={{story.id}} *ngFor="let story of stories$ | async" class="link">
+  <mat-card class="card">
+    <mat-card-title class="card--title">{{story.title}}</mat-card-title>
+    <mat-card-subtitle>
+      {{story.score}} points
+      <app-divider-vertical></app-divider-vertical>
+      {{story.by}}
+      <app-divider-vertical></app-divider-vertical>
+      {{formatDate(story.time)}}
+      <span *ngIf="story.kids">
+        <app-divider-vertical></app-divider-vertical>
+        <span>Comments</span>
+      </span>
+    </mat-card-subtitle>
+  </mat-card>
+</a>
