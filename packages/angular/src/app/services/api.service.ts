@@ -19,6 +19,7 @@ import {
 
 import { environment } from '../../environments/environment';
 import { ValidationService } from './validation/validation.service';
+import { DateService } from './date.service';
 import { EntityNames  } from './validation/schemas';
 
 
@@ -29,6 +30,7 @@ export class APIService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly validationService: ValidationService,
+    private readonly dateService: DateService,
   ) {}
 
   getNewestStories(
@@ -80,7 +82,7 @@ export class APIService {
             throw new Error(`Validation entity with id "${id}" failed`);
           }
 
-          entity.time = entity.time * 1000;
+          entity.time = this.dateService.transformDate(entity.time);
 
           return entity;
         }),
