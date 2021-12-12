@@ -3,12 +3,14 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { StoryComponent } from './pages/story/story.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DividerVerticalComponent } from './components/divider-vertical/divider-vertical.component';
 
 
 @NgModule({
@@ -16,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppComponent,
     HomeComponent,
     StoryComponent,
+    DividerVerticalComponent,
   ],
   imports: [
     BrowserModule,
@@ -23,6 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     MatToolbarModule,
     MatCardModule,
+    MatDividerModule,
     BrowserAnimationsModule,
   ],
   providers: [Title],
