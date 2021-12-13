@@ -1,4 +1,6 @@
-<a routerLink={{story.id}} *ngFor="let story of stories$ | async" class="link">
+<div class="" *ngIf="!stories.length && (loading$ | async) === false">There are no stories.</div>
+
+<a routerLink={{story.id}} *ngFor="let story of stories" class="link">
   <mat-card class="card">
     <mat-card-title class="card--title">{{story.title}}</mat-card-title>
     <mat-card-subtitle>

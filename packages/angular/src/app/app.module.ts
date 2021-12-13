@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +29,7 @@ import { DividerVerticalComponent } from './components/divider-vertical/divider-
     MatCardModule,
     MatDividerModule,
     BrowserAnimationsModule,
+    MatProgressSpinnerModule,
   ],
   providers: [Title],
   bootstrap: [AppComponent],

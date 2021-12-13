@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
+import { LoadingService } from './services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +12,13 @@ import { filter, map } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   title = 'angular';
 
+  loading$ = this.loader.loading$;
+
   constructor(
     private titleService: Title,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    public loader: LoadingService,
   ) { }
 
   ngOnInit() {

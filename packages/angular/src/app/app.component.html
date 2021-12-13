@@ -10,3 +10,5 @@
 <div class="container">
   <router-outlet></router-outlet>
 </div>
+
+<mat-spinner *ngIf="loading$ | async" class="spinner"></mat-spinner>
