@@ -21,7 +21,7 @@
       "**/babel-loader",
       "**/eslint",
       "**/webpack",
-      "**/@angular/material",
+      "**/@angular*/**",
       "**/babel-jest",
       "**/jest"
     ]
