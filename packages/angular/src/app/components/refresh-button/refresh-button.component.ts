@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { TooltipPosition } from '@angular/material/tooltip';
+
 
 @Component({
   selector: 'app-refresh-button',
@@ -9,4 +11,8 @@ export class RefreshButtonComponent {
   @Input() onClick!: () => void;
 
   @Input() loading!: boolean;
+
+  @Input() tooltipText: string = 'Refresh';
+
+  @Input() tooltipPlacement: TooltipPosition = 'above';
 }

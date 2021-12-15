@@ -1,19 +1,25 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { StoryComponent } from './pages/story/story.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DividerVerticalComponent } from './components/divider-vertical/divider-vertical.component';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { LayoutComponent } from './components/layout/layout.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatMenuModule } from '@angular/material/menu';
+import { LayoutModule } from '@angular/cdk/layout';
 
 
 @NgModule({
@@ -23,6 +29,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
     StoryComponent,
     DividerVerticalComponent,
     RefreshButtonComponent,
+    LayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,8 +41,13 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
     MatDividerModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatGridListModule,
+    MatMenuModule,
+    LayoutModule,
   ],
   providers: [Title],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

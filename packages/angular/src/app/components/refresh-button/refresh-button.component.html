@@ -3,6 +3,9 @@
   (click)="onClick()"
   [disabled]="loading"
   aria-label="Refresh"
+  #tooltip="matTooltip"
+  [matTooltip]="tooltipText"
+  [matTooltipPosition]="tooltipPlacement"
 >
-  Refresh
+  <mat-icon [ngClass]="loading ? 'rotating' : ''">autorenew</mat-icon>
 </button>

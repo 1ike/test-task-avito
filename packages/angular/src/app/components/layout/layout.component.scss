@@ -1,0 +1,25 @@
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  margin-bottom: 0;
+  margin-left: 20px;
+}
+
+.header-button-container {
+  margin-left: auto;
+  margin-right: 30px;
+}
+
+.container {
+  margin: 30px;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

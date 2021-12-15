@@ -1,18 +1,29 @@
-<div class="" *ngIf="!stories.length && (loading$ | async) === false">There are no stories.</div>
+<app-layout>
+  <div class="" *ngIf="!stories.length && (loading$ | async) === false">There are no stories.</div>
 
-<a routerLink={{story.id}} *ngFor="let story of stories" class="link">
-  <mat-card class="card">
-    <mat-card-title class="card--title">{{story.title}}</mat-card-title>
-    <mat-card-subtitle>
-      {{story.score}} points
-      <app-divider-vertical></app-divider-vertical>
-      {{story.by}}
-      <app-divider-vertical></app-divider-vertical>
-      {{formatDate(story.time)}}
-      <span *ngIf="story.kids">
+  <app-refresh-button
+    header-button
+    [onClick]="onClickRefreshButton"
+    [loading]="(loading$ | async) === true"
+    [tooltipText]="'Refresh News'"
+    [tooltipPlacement]="'before'"
+  ></app-refresh-button>
+
+  <a routerLink={{story.id}} *ngFor="let story of stories" class="link">
+    <mat-card class="card">
+      <mat-card-title class="card--title">{{story.title}}</mat-card-title>
+      <mat-card-subtitle>
+        {{story.score}} points
         <app-divider-vertical></app-divider-vertical>
-        <span>Comments</span>
-      </span>
-    </mat-card-subtitle>
-  </mat-card>
-</a>
+        {{story.by}}
+        <app-divider-vertical></app-divider-vertical>
+        {{formatDate(story.time)}}
+        <span *ngIf="story.kids">
+          <app-divider-vertical></app-divider-vertical>
+          <span>Comments</span>
+        </span>
+      </mat-card-subtitle>
+    </mat-card>
+  </a>
+</app-layout>
+

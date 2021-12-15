@@ -66,4 +66,6 @@ export class HomeComponent implements OnDestroy {
   }
 
   formatDate = (date: Time) => this.dateService.formatDate(date);
+
+  onClickRefreshButton = () => this.fetchStories();
 }
