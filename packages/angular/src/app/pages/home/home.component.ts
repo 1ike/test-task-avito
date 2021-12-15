@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { StoryInterface, Time } from '@test-task-avito/shared';
@@ -13,7 +13,7 @@ import { LoadingService } from 'src/app/services/loading.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnDestroy {
 
   stories: StoryInterface[] = [];
 
@@ -30,9 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private apiService: APIService,
     private dateService: DateService,
     public loader: LoadingService,
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.startStoriesPolling();
   }
 
