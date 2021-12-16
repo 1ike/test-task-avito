@@ -68,4 +68,11 @@ export class HomeComponent implements OnDestroy {
   formatDate = (date: Time) => this.dateService.formatDate(date);
 
   onClickRefreshButton = () => this.fetchStories();
+
+  onClickShowMoreButton = () => {
+    this.storiesQtyPerPage += environment.STORIES_QTY_PER_PAGE;
+    this.fetchStories();
+  };
+
+  showShowMoreButton = () => this.storiesQtyPerPage <= environment.STORIES_QTY;
 }
