@@ -10,7 +10,7 @@
     [tooltipPlacement]="'before'"
   ></app-refresh-button>
 
-  <a routerLink={{story.id}} *ngFor="let story of stories" class="link">
+  <a (click)="onClickStory(story)" *ngFor="let story of stories" class="link">
     <mat-card class="card">
       <mat-card-title class="card--title">{{story.title}}</mat-card-title>
       <mat-card-subtitle>

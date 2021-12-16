@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { StoryInterface, Time } from '@test-task-avito/shared';
 import { APIService } from '../../services/api.service';
@@ -30,6 +31,7 @@ export class HomeComponent implements OnDestroy {
     private apiService: APIService,
     private dateService: DateService,
     public loader: LoadingService,
+    private router: Router,
   ) {
     this.startStoriesPolling();
   }
@@ -66,6 +68,12 @@ export class HomeComponent implements OnDestroy {
   }
 
   formatDate = (date: Time) => this.dateService.formatDate(date);
+
+  onClickStory = (story: StoryInterface) => {
+    this.router.navigate(['/', story.id], {
+      state: { story: JSON.stringify(story) },
+    });
+  };
 
   onClickRefreshButton = () => this.fetchStories();
 

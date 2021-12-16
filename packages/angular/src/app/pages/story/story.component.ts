@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+// import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+
+
+import { StoryInterface } from '@test-task-avito/shared';
+
 
 @Component({
   selector: 'app-story',
@@ -7,10 +13,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StoryComponent implements OnInit {
 
-  // constructor() { }
+  story!: StoryInterface;
 
-  ngOnInit(): void {
-    console.log(' Story ');
+  constructor(private location: Location) {
+    if (history.state.story) {
+      this.story = JSON.parse(history.state.story);
+    }
+  }
+
+  ngOnInit() {
+    console.log('this.story = ', this.story);
   }
 
 }
