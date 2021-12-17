@@ -71,7 +71,7 @@ export class HomeComponent implements OnDestroy {
 
   onClickStory = (story: StoryInterface) => {
     this.router.navigate(['/', story.id], {
-      state: { story: JSON.stringify(story) },
+      state: { storyStringified: JSON.stringify(story) },
     });
   };
 

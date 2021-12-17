@@ -6,9 +6,9 @@ import { Time } from '@test-task-avito/shared';
   providedIn: 'root',
 })
 export class DateService {
-  transformDate = (time: Time) => time * 1000;
+  readonly transformDate = (time: Time) => time * 1000;
 
-  formatDate = (time: Time) => (new Date(time)).toLocaleString('en', {
+  readonly formatDate = (time: Time) => (new Date(time)).toLocaleString('en', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

@@ -15,6 +15,7 @@ import {
   IDs,
   StoryInterface,
   CommentInterface,
+  Time,
 } from '@test-task-avito/shared';
 
 import { environment } from '../../environments/environment';
@@ -38,8 +39,9 @@ export class APIService {
   ): Observable<StoryInterface[]> {
     const storyIds$ = this.getNewestStoryIds(storiesQty);
     const stories$ = storyIds$.pipe(
+      map((idsData) => (idsData instanceof Error) ? [] : idsData),
       switchMap((ids) =>
-        forkJoin(ids.map((id) => this.getItem<StoryInterface>(id, EntityNames.Story))),
+        forkJoin(ids.map((id) => this.getStory(id))),
       ),
       map((stories) => stories.filter((story) => !(story instanceof Error))),
       defaultIfEmpty([]),
@@ -52,7 +54,7 @@ export class APIService {
     return stories$;
   }
 
-  private getNewestStoryIds(storiesQty: number): Observable<IDs> {
+  private getNewestStoryIds(storiesQty: number): Observable<IDs | Error> {
     const storyIds$ = this.httpClient
       .get(
         `${environment.HACKER_NEWS_API_URL}/newstories.json`,
@@ -68,7 +70,7 @@ export class APIService {
     return storyIds$;
   }
 
-  private getItem<T extends Pick<StoryInterface, 'time'>>(id: ID, entityName: EntityNames): Observable<T> {
+  private getItem<T extends { time: Time }>(id: ID, entityName: EntityNames): Observable<T | Error> {
     const item$ = this.httpClient
       .get<T>(
       `${environment.HACKER_NEWS_API_URL}/item/${id}.json`,
@@ -95,7 +97,13 @@ export class APIService {
     return item$;
   }
 
-  getComment(id: ID): Observable<CommentInterface> {
+  getStory(id: ID): Observable<StoryInterface | Error> {
+    const story$ = this.getItem<StoryInterface>(id, EntityNames.Story);
+
+    return story$;
+  }
+
+  getComment(id: ID): Observable<CommentInterface | Error> {
     const comment$ = this.getItem<CommentInterface>(id, EntityNames.Comment);
 
     return comment$;
