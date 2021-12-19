@@ -4,7 +4,7 @@
 
   <app-refresh-button
     header-button
-    [onClick]="onClickRefreshButton"
+    (clickEmmiter)="onClickRefreshButton()"
     [loading]="(loading$ | async) === true"
     [tooltipText]="'Refresh News'"
     [tooltipPlacement]="'before'"

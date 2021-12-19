@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TooltipPosition } from '@angular/material/tooltip';
 
 
@@ -8,11 +8,15 @@ import { TooltipPosition } from '@angular/material/tooltip';
   styleUrls: ['./refresh-button.component.scss'],
 })
 export class RefreshButtonComponent {
-  @Input() onClick!: () => void;
-
   @Input() loading!: boolean;
 
   @Input() tooltipText: string = 'Refresh';
 
   @Input() tooltipPlacement: TooltipPosition = 'above';
+
+  @Output() clickEmmiter = new EventEmitter<void>();
+
+  onClick() {
+    this.clickEmmiter.emit();
+  }
 }
