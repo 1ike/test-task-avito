@@ -24,6 +24,19 @@ import { DateService } from './date.service';
 import { EntityNames  } from './validation/schemas';
 
 
+export interface CommentTreeNode {
+  data: CommentInterface;
+  children: CommentTreeNode[];
+  qty: number;
+  level: number;
+}
+
+export interface CommentTreeData {
+  children: CommentTreeNode[];
+  qty: number;
+}
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -107,5 +120,29 @@ export class APIService {
     const comment$ = this.getItem<CommentInterface>(id, EntityNames.Comment);
 
     return comment$;
+  }
+
+  async getCommentTree(kids: IDs = [], level = 1): Promise<CommentTreeData> {
+    if (!kids.length) return ({ children: [], qty: 0 });
+
+
+    const promises =  kids.map(async id => {
+      const commentData$ = await this.getItem<CommentInterface>(id, EntityNames.Comment).toPromise();
+      if (commentData$ instanceof Error) return commentData$;
+
+      const { children, qty } = await this.getCommentTree(commentData$?.kids, level + 1);
+      const commentNode$ = { data: commentData$, children, qty, level } as CommentTreeNode;
+
+      return commentNode$;
+    });
+
+    const commentNodesRaw = await Promise.allSettled(promises);
+    const commentNodesFiltered = commentNodesRaw
+      .filter((c => c.status === 'fulfilled' && !(c.value instanceof Error))) as Array<PromiseFulfilledResult<CommentTreeNode>>;
+    const commentNodes = commentNodesFiltered.map(c => c.value);
+
+    const qty = commentNodes.reduce((acc, node) => acc + node.qty, commentNodes.length);
+
+    return { children: commentNodes, qty };
   }
 }

@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 
-
 import { StoryInterface } from '@test-task-avito/shared';
 import { DateService } from 'src/app/services/date.service';
 import { APIService } from 'src/app/services/api.service';
@@ -19,6 +18,8 @@ export class StoryComponent implements OnInit {
   story!: StoryInterface;
 
   storyFetchingError: null | Error = null;
+
+  loadingStory: boolean = false;
 
   constructor(
     private titleService: Title,
@@ -38,6 +39,8 @@ export class StoryComponent implements OnInit {
     if (this.story) {
       this.titleService.setTitle(this.story.title);
     } else {
+      this.loadingStory = true;
+
       const id = Number(this.route.snapshot.paramMap.get('id'));
       this.apiService.getStory(id).subscribe({
         next: (data) => {
@@ -46,6 +49,7 @@ export class StoryComponent implements OnInit {
           } else {
             this.story = data;
           }
+          this.loadingStory = false;
         },
       });
     }

@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTreeModule } from '@angular/material/tree';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +21,8 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { LayoutModule } from '@angular/cdk/layout';
+import { CommentsComponent } from './pages/story/components/comments/comments.component';
+import { CommentComponent } from './pages/story/components/comments/components/comment/comment.component';
 
 
 @NgModule({
@@ -30,6 +33,8 @@ import { LayoutModule } from '@angular/cdk/layout';
     DividerVerticalComponent,
     RefreshButtonComponent,
     LayoutComponent,
+    CommentsComponent,
+    CommentComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +51,7 @@ import { LayoutModule } from '@angular/cdk/layout';
     MatGridListModule,
     MatMenuModule,
     LayoutModule,
+    MatTreeModule,
   ],
   providers: [Title],
   bootstrap: [AppComponent],

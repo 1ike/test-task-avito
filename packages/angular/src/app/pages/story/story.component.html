@@ -4,7 +4,6 @@
     <button
       mat-button
       color="primary"
-
     >
       <mat-icon class="home-button--icon">home</mat-icon>
       Back to the News List
@@ -24,7 +23,7 @@
     the page.
   </div>
 
-  <ng-template [ngIf]="story" #content>
+  <ng-template [ngIf]="story">
     <h1 className="mt-4 mb-4">{{story.title}}</h1>
 
     <dl className="">
@@ -44,6 +43,11 @@
             <dd className="" [innerHTML]="story.text"></dd>
       </ng-template>
     </dl>
+  </ng-template>
+
+
+  <ng-template [ngIf]="story">
+    <app-comments [story]="story" [loadingStory]="loadingStory"></app-comments>
   </ng-template>
 
 </app-layout>
