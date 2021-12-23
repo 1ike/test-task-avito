@@ -1,9 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { of, from, Subscription } from 'rxjs';
+import { delay, tap, mergeMap, repeat } from 'rxjs/operators';
 
 import { IDs, StoryInterface } from '@test-task-avito/shared';
-import { APIService, CommentTreeNode } from 'src/app/services/api.service';
+import {
+  APIService,
+  CommentTreeData,
+  CommentTreeNode,
+} from 'src/app/services/api.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -11,8 +18,8 @@ import { APIService, CommentTreeNode } from 'src/app/services/api.service';
   templateUrl: './comments.component.html',
   styleUrls: ['./comments.component.scss'],
 })
-export class CommentsComponent implements OnInit {
-  treeControl = new NestedTreeControl<CommentTreeNode>(node => node.children);
+export class CommentsComponent implements OnInit, OnDestroy {
+  treeControl = new NestedTreeControl<CommentTreeNode>((node) => node.children);
 
   commentTree = new MatTreeNestedDataSource<CommentTreeNode>();
 
@@ -20,29 +27,51 @@ export class CommentsComponent implements OnInit {
 
   loadingComments = false;
 
+  private subscription: Subscription | null = null;
+
   @Input() story!: StoryInterface;
 
   @Input() loadingStory = false;
 
-  constructor(
-    private apiService: APIService,
-  ) {}
+  constructor(private apiService: APIService) {}
 
   ngOnInit() {
     this.onClickRefreshCommentsButton();
   }
 
-  onClickRefreshCommentsButton(){
-    this.getCommentsTree(this.story.kids);
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
-  getCommentsTree(kids: IDs = []){
+  onClickRefreshCommentsButton() {
+    this.startPolling();
+  }
+
+  fetchCommentsTreeData(kids: IDs = this.story.kids || []) {
     this.loadingComments = true;
 
-    this.apiService.getCommentTree(kids).then(({ children, qty }) => {
-      this.commentTree.data = children;
-      this.commentsQty = qty;
+    return this.apiService.getCommentTree(kids).then((data) => {
       this.loadingComments = false;
+
+      return data;
     });
+  }
+
+  setCommentsTreeData({ children, qty }: CommentTreeData) {
+    this.commentTree.data = children;
+    this.commentsQty = qty;
+  }
+
+  startPolling() {
+    if (this.subscription) this.subscription.unsubscribe();
+
+    const polling$ = of({}).pipe(
+      mergeMap(() => from(this.fetchCommentsTreeData())),
+      tap((data) => this.setCommentsTreeData(data)),
+      delay(environment.POLLING_INTERVAL),
+      repeat(),
+    );
+
+    this.subscription = polling$.subscribe();
   }
 }
