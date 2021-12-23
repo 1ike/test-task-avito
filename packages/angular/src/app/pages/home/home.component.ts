@@ -38,6 +38,7 @@ export class HomeComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.timer);
+    this.subscription?.unsubscribe();
   }
 
 
@@ -61,6 +62,7 @@ export class HomeComponent implements OnDestroy {
   }
 
   private startStoriesPolling() {
+    clearTimeout(this.timer);
     this.fetchStories();
     this.timer = setTimeout(() => {
       this.startStoriesPolling();
@@ -75,7 +77,7 @@ export class HomeComponent implements OnDestroy {
     });
   };
 
-  onClickRefreshButton = () => this.fetchStories();
+  onClickRefreshButton = () => this.startStoriesPolling();
 
   onClickShowMoreButton = () => {
     this.storiesQtyPerPage += environment.STORIES_QTY_PER_PAGE;
