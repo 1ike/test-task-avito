@@ -1,5 +1,4 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { StoryInterface, Time } from '@test-task-avito/shared';
@@ -7,6 +6,7 @@ import { APIService } from '../../services/api.service';
 import { DateService } from '../../services/date.service';
 import { environment } from '../../../environments/environment';
 import { LoadingService } from 'src/app/services/loading.service';
+import polling, { PollingSubscription } from 'src/app/lib/polling';
 
 
 @Component({
@@ -15,17 +15,13 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnDestroy {
-
   stories: StoryInterface[] = [];
-
-  timer!: ReturnType<typeof setTimeout>;
 
   storiesQtyPerPage: number = environment.STORIES_QTY_PER_PAGE;
 
   loading$ = this.loader.loading$;
 
-  private subscription: Subscription | null = null;
-
+  private subscription: PollingSubscription = null;
 
   constructor(
     private apiService: APIService,
@@ -37,36 +33,34 @@ export class HomeComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    clearTimeout(this.timer);
     this.subscription?.unsubscribe();
   }
 
-
-  fetchStories() {
-    if (this.subscription) this.subscription.unsubscribe();
-
+  fetchStories = () => {
     this.loader.show();
+    return this.apiService.getNewestStories(this.storiesQtyPerPage);
+  };
 
-    this.subscription = this.apiService.getNewestStories(this.storiesQtyPerPage).subscribe(
-      {
-        next: (stories) => {
-          this.stories = stories;
-          this.loader.hide();
-        },
-        error: err => {
-          console.error('Observer got an error: ' + err);
-          this.loader.hide();
-        },
-      },
-    );
+  setStories = (stories: StoryInterface[]) => {
+    this.stories = stories;
+    this.loader.hide();
+  };
+
+  fetchStoriesErrorCallback(error: Error) {
+    console.error('Got an error when fetching Stories: ', error);
+    this.loader.hide();
   }
 
   private startStoriesPolling() {
-    clearTimeout(this.timer);
-    this.fetchStories();
-    this.timer = setTimeout(() => {
-      this.startStoriesPolling();
-    }, environment.POLLING_INTERVAL);
+    polling({
+      subscription: this.subscription,
+      setSubscription: (subscription) => {
+        this.subscription = subscription;
+      },
+      streamFactory: () => this.fetchStories(),
+      successCallback: this.setStories,
+      errorCallback: this.fetchStoriesErrorCallback,
+    });
   }
 
   formatDate = (date: Time) => this.dateService.formatDate(date);
@@ -81,7 +75,7 @@ export class HomeComponent implements OnDestroy {
 
   onClickShowMoreButton = () => {
     this.storiesQtyPerPage += environment.STORIES_QTY_PER_PAGE;
-    this.fetchStories();
+    this.startStoriesPolling();
   };
 
   showShowMoreButton = () => this.storiesQtyPerPage <= environment.STORIES_QTY;
