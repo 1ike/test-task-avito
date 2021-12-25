@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { from } from 'rxjs';
 
 import { IDs, StoryInterface } from '@test-task-avito/shared';
 import {
@@ -26,7 +25,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
   loadingComments = false;
 
-  private subscription: PollingSubscription = null;
+  private pollingSubscription: PollingSubscription = null;
 
   @Input() story!: StoryInterface;
 
@@ -39,7 +38,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    this.pollingSubscription?.unsubscribe();
   }
 
   onClickRefreshCommentsButton() {
@@ -49,25 +48,22 @@ export class CommentsComponent implements OnInit, OnDestroy {
   fetchCommentsTreeData = (kids: IDs = this.story.kids || []) => {
     this.loadingComments = true;
 
-    return this.apiService.getCommentTree(kids).then((data) => {
-      this.loadingComments = false;
-
-      return data;
-    });
+    return this.apiService.getCommentTree(kids);
   };
 
   setCommentsTreeData = ({ children, qty }: CommentTreeData) => {
     this.commentTree.data = children;
     this.commentsQty = qty;
+    this.loadingComments = false;
   };
 
   startPolling() {
     polling({
-      subscription: this.subscription,
+      subscription: this.pollingSubscription,
       setSubscription: (subscription) => {
-        this.subscription = subscription;
+        this.pollingSubscription = subscription;
       },
-      streamFactory: () => from(this.fetchCommentsTreeData()),
+      streamFactory: () => this.fetchCommentsTreeData(),
       successCallback: this.setCommentsTreeData,
     });
   }

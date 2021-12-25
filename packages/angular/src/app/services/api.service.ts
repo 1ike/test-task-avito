@@ -21,7 +21,7 @@ import {
 import { environment } from '../../environments/environment';
 import { ValidationService } from './validation/validation.service';
 import { DateService } from './date.service';
-import { EntityNames  } from './validation/schemas';
+import { EntityNames } from './validation/schemas';
 
 
 export interface CommentTreeNode {
@@ -45,7 +45,7 @@ export class APIService {
     private readonly httpClient: HttpClient,
     private readonly validationService: ValidationService,
     private readonly dateService: DateService,
-  ) {}
+  ) { }
 
   getNewestStories(
     storiesQty: number = environment.STORIES_QTY,
@@ -73,7 +73,7 @@ export class APIService {
         `${environment.HACKER_NEWS_API_URL}/newstories.json`,
       )
       .pipe(
-        map(( data ) => (data as IDs).slice(0, storiesQty)),
+        map((data) => (data as IDs).slice(0, storiesQty)),
         catchError((error) => {
           console.error('log Story ids error somewhere: ', error);
           return of(error);
@@ -89,7 +89,7 @@ export class APIService {
       `${environment.HACKER_NEWS_API_URL}/item/${id}.json`,
     )
       .pipe(
-        map(( entity ) => {
+        map((entity) => {
           if (!this.validationService.validateEntity(
             entity,
             EntityNames[entityName],
@@ -122,27 +122,31 @@ export class APIService {
     return comment$;
   }
 
-  async getCommentTree(kids: IDs = [], level = 1): Promise<CommentTreeData> {
-    if (!kids.length) return ({ children: [], qty: 0 });
+  getCommentTree(kids: IDs = [], level = 1): Observable<any> {
 
+    if (!kids?.length) return of({ children: [], qty: 0 });
 
-    const promises =  kids.map(async id => {
-      const commentData$ = await this.getItem<CommentInterface>(id, EntityNames.Comment).toPromise();
-      if (commentData$ instanceof Error) return commentData$;
+    const getNode = (id: ID) => this.getComment(id).pipe(
+      switchMap((commentData) => {
+        if (commentData instanceof Error) return of(commentData);
 
-      const { children, qty } = await this.getCommentTree(commentData$?.kids, level + 1);
-      const commentNode$ = { data: commentData$, children, qty, level } as CommentTreeNode;
+        const commentNode$ = this.getCommentTree(commentData?.kids, level + 1).pipe(
+          map(({ children, qty }) => ({ data: commentData, children, qty, level }) as CommentTreeNode),
+        );
 
-      return commentNode$;
-    });
+        return commentNode$;
+      }),
+    );
 
-    const commentNodesRaw = await Promise.allSettled(promises);
-    const commentNodesFiltered = commentNodesRaw
-      .filter((c => c.status === 'fulfilled' && !(c.value instanceof Error))) as Array<PromiseFulfilledResult<CommentTreeNode>>;
-    const commentNodes = commentNodesFiltered.map(c => c.value);
+    return of(kids).pipe(
+      switchMap((ids) => forkJoin(ids.map((id) => getNode(id)))),
+      map((commentNodesData) => {
+        const commentNodes = commentNodesData.filter((node) => !(node instanceof Error)) as CommentTreeNode[];
 
-    const qty = commentNodes.reduce((acc, node) => acc + node.qty, commentNodes.length);
+        const qty = commentNodes.reduce((acc, node) => acc + node.qty, commentNodes.length);
 
-    return { children: commentNodes, qty };
+        return { children: commentNodes, qty };
+      }),
+    );
   }
 }
