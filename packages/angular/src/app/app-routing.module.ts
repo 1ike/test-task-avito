@@ -8,11 +8,11 @@ import { StoryComponent as Story } from './pages/story/story.component';
 const routes: Routes = [
   { path: '', component: Home, pathMatch: 'full', data: { title: 'Hacker news' } },
   { path: ':id', component: Story },
-  { path: '**',  redirectTo: '/' },
+  { path: '**', redirectTo: '/' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
