@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { StoryInterface, Time } from '@test-task-avito/shared';
@@ -14,7 +14,7 @@ import polling, { PollingSubscription } from 'src/app/lib/polling';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy {
   stories: StoryInterface[] = [];
 
   storiesQtyPerPage: number = environment.STORIES_QTY_PER_PAGE;
@@ -28,7 +28,9 @@ export class HomeComponent implements OnDestroy {
     private dateService: DateService,
     public loader: LoadingService,
     private router: Router,
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.startStoriesPolling();
   }
 
