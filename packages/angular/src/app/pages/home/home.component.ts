@@ -49,10 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             0,
           );
 
-          setTimeout(
-            () => this.startStoriesPolling(),
-            environment.POLLING_INTERVAL,
-          );
+          this.startStoriesPolling(environment.POLLING_INTERVAL);
         }
       },
     });
@@ -81,7 +78,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loader.hide();
   }
 
-  private startStoriesPolling() {
+  private startStoriesPolling(startDelay = 0) {
     polling({
       subscription: this.subscription,
       setSubscription: (subscription) => {
@@ -90,6 +87,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       streamFactory: () => this.fetchStories(),
       successCallback: this.setStories,
       errorCallback: this.fetchStoriesErrorCallback,
+      startDelay: startDelay,
     });
   }
 
