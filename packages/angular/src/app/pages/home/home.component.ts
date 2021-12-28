@@ -8,6 +8,7 @@ import { DateService } from '../../services/date.service';
 import { environment } from '../../../environments/environment';
 import { LoadingService } from 'src/app/services/loading.service';
 import polling, { PollingSubscription } from 'src/app/lib/polling';
+import { ScrollService } from 'src/app/services/scroll.service';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private dateService: DateService,
     public loader: LoadingService,
     private router: Router,
+    private scrollService: ScrollService,
   ) {
     this.suspendLoading$ = router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -42,6 +44,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (previousEvent.url === '/') {
           this.subscription?.unsubscribe();
         } else if (currentEvent.url === '/') {
+          setTimeout(
+            () => this.scrollService.restoreScrollPosition(),
+            0,
+          );
+
           setTimeout(
             () => this.startStoriesPolling(),
             environment.POLLING_INTERVAL,
@@ -89,6 +96,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   formatDate = (date: Time) => this.dateService.formatDate(date);
 
   onClickStory = (story: StoryInterface) => {
+    this.scrollService.saveScrollPosition();
+
     this.router.navigate(['/', story.id], {
       state: { storyStringified: JSON.stringify(story) },
     });
