@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, Observable, pairwise } from 'rxjs';
 
 import { StoryInterface, Time } from '@test-task-avito/shared';
 import { APIService } from '../../services/api.service';
@@ -23,12 +24,32 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscription: PollingSubscription = null;
 
+  suspendLoading$!: Observable<[NavigationEnd, NavigationEnd]>;
+
   constructor(
     private apiService: APIService,
     private dateService: DateService,
     public loader: LoadingService,
     private router: Router,
-  ) {}
+  ) {
+    this.suspendLoading$ = router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      pairwise(),
+    );
+
+    this.suspendLoading$.subscribe({
+      next: ([previousEvent, currentEvent]) => {
+        if (previousEvent.url === '/') {
+          this.subscription?.unsubscribe();
+        } else if (currentEvent.url === '/') {
+          setTimeout(
+            () => this.startStoriesPolling(),
+            environment.POLLING_INTERVAL,
+          );
+        }
+      },
+    });
+  }
 
   ngOnInit(): void {
     this.startStoriesPolling();
