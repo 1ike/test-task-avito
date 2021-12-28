@@ -23,7 +23,7 @@ export default <T>({
 }: PollingInput<T>) => {
   if (subscription) subscription.unsubscribe();
 
-  const polling$ = of({}).pipe(
+  const polling$ = of(null).pipe(
     mergeMap(() => streamFactory()),
     tap(successCallback),
     delay(environment.POLLING_INTERVAL),
