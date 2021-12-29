@@ -2,6 +2,7 @@
   <h2 class="comments--title">
     Comments ({{commentsQty}})
     <app-refresh-button
+      *ngIf="commentsQty"
       header-button
       (clickEmmiter)="onClickRefreshCommentsButton()"
       [loading]="loadingStory || loadingComments"
