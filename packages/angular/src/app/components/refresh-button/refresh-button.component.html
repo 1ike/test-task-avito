@@ -1,0 +1,11 @@
+<button mat-raised-button
+  color="primary"
+  (click)="onClick()"
+  [disabled]="loading"
+  aria-label="Refresh"
+  #tooltip="matTooltip"
+  [matTooltip]="tooltipText"
+  [matTooltipPosition]="tooltipPlacement"
+>
+  <mat-icon [ngClass]="loading ? 'rotating' : ''">autorenew</mat-icon>
+</button>

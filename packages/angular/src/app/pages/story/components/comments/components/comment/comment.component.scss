@@ -1,0 +1,11 @@
+:host {
+  flex-grow: 1;
+}
+
+.card {
+  margin-bottom: 7px;
+
+  &--button {
+    font-size: 12px;
+  }
+}

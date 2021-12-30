@@ -1,0 +1,19 @@
+<mat-card class="card" class="card">
+  <mat-card-subtitle>
+    {{node.data.by}}
+    <app-divider-vertical></app-divider-vertical>
+    {{dateService.formatDate(node.data.time)}}
+    <span *ngIf="node.children.length" matTreeNodeToggle>
+      <app-divider-vertical></app-divider-vertical>
+      <button
+        mat-stroked-button
+        matTreeNodeToggle
+        class="card--button"
+        color="primary"
+      >
+        {{isExpanded ? 'hide answers' : 'show answers'}}
+      </button>
+    </span>
+  </mat-card-subtitle>
+  <mat-card-content [innerHTML]="node.data.text"></mat-card-content>
+</mat-card>

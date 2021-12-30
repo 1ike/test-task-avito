@@ -1,0 +1,14 @@
+<mat-toolbar>
+  <a routerLink="/" class="link">
+    <span class="mat-display-1 logo">Avito test task</span>
+  </a>
+  <div class="header-button-container">
+    <ng-content select="[header-button]"></ng-content>
+  </div>
+</mat-toolbar>
+
+<div class="container">
+  <ng-content></ng-content>
+</div>
+
+<mat-spinner *ngIf="loading$ | async" class="spinner"></mat-spinner>

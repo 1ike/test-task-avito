@@ -12,7 +12,18 @@
   "devDependencies": {
     "husky": "^7.0.4"
   },
-  "workspaces": [
-    "./packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/babel-eslint",
+      "**/babel-loader",
+      "**/eslint",
+      "**/webpack",
+      "**/babel-jest",
+      "**/jest"
+    ]
+  },
+  "packageManager": "yarn@1.22.15"
 }

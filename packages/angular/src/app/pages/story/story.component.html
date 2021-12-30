@@ -1,0 +1,53 @@
+<app-layout>
+
+  <a routerLink="/" header-button>
+    <button
+      mat-button
+      color="primary"
+    >
+      <mat-icon class="home-button--icon">home</mat-icon>
+      Back to the News List
+    </button>
+  </a>
+
+  <div *ngIf="storyFetchingError">
+    Can't fetch this story. &nbsp;
+    Try to
+    <button
+      mat-stroked-button
+      color="primary"
+      on-click="reloadPage()"
+    >
+      refresh
+    </button>
+    the page.
+  </div>
+
+  <ng-template [ngIf]="story">
+    <h1 className="mt-4 mb-4">{{story.title}}</h1>
+
+    <dl className="">
+      <dt className="">Author</dt>
+      <dd className="">{{story.by}}</dd>
+
+      <dt className="">Date</dt>
+      <dd className="">{{dateService.formatDate(story.time)}}</dd>
+
+      <ng-template [ngIf]="story.url">
+        <dt className="">Link</dt>
+        <dd className=""><a href={{story.url}}>{{story.url}}</a></dd>
+      </ng-template>
+
+      <ng-template [ngIf]="story.text">
+            <dt className="">Text</dt>
+            <dd className="" [innerHTML]="story.text"></dd>
+      </ng-template>
+    </dl>
+  </ng-template>
+
+
+  <ng-template [ngIf]="story">
+    <app-comments [story]="story" [loadingStory]="loadingStory"></app-comments>
+  </ng-template>
+
+</app-layout>

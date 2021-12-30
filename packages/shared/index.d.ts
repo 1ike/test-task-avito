@@ -1,10 +1,12 @@
 export type ID = number;
 export type IDs = ID[];
 
+export type Time = number;
+
 export interface BaseEntityInterface {
   id: ID;
   by: string;
-  time: number;
+  time: Time;
   kids?: IDs;
   deleted?: boolean;
 }

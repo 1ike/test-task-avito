@@ -1,0 +1,42 @@
+<app-layout>
+
+  <div class="" *ngIf="!stories.length && (loading$ | async) === false">There are no stories.</div>
+
+  <app-refresh-button
+    header-button
+    (clickEmmiter)="onClickRefreshButton()"
+    [loading]="(loading$ | async) === true"
+    [tooltipText]="'Refresh News'"
+    [tooltipPlacement]="'before'"
+  ></app-refresh-button>
+
+  <a (click)="onClickStory(story)" *ngFor="let story of stories" class="link">
+    <mat-card class="card">
+      <mat-card-title class="card--title">{{story.title}}</mat-card-title>
+      <mat-card-subtitle>
+        {{story.score}} points
+        <app-divider-vertical></app-divider-vertical>
+        {{story.by}}
+        <app-divider-vertical></app-divider-vertical>
+        {{formatDate(story.time)}}
+        <span *ngIf="story.kids">
+          <app-divider-vertical></app-divider-vertical>
+          <span>Has comments</span>
+        </span>
+      </mat-card-subtitle>
+    </mat-card>
+  </a>
+
+  <button
+    *ngIf="stories.length && showShowMoreButton()"
+    mat-stroked-button
+    color="primary"
+    (click)="onClickShowMoreButton()"
+    class="show-more"
+    [disabled]="(loading$ | async) === true"
+  >
+    Show more
+  </button>
+
+</app-layout>
+

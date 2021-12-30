@@ -1,0 +1,29 @@
+.home-button--icon {
+  margin-top: -4px;
+  margin-right: 3px;
+}
+
+h1 {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-size: 26px;
+  font-weight: 500;
+}
+
+dl {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+$dtWidth: 100px;
+dt {
+  flex: 0 0 auto;
+  width: $dtWidth;
+  font-weight: 500;
+}
+dd {
+  flex: 0 0 auto;
+  width: calc(100% - $dtWidth);
+  margin-left: 0;
+  margin-bottom: 0.5rem;
+}

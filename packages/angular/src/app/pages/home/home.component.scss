@@ -1,0 +1,24 @@
+.link {
+  text-decoration: none;
+}
+
+.card {
+  margin-bottom: 10px;
+
+  &--title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.spinner {
+  position: fixed;
+  left: 50%;
+  right: 50%;
+  z-index: 10;
+}
+
+.show-more {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
