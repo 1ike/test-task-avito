@@ -19,7 +19,9 @@
 
 ## Демо
 
-[https://1ike.github.io/test-task-avito/](https://1ike.github.io/test-task-avito/) &nbsp; (react).
+[https://1ike.github.io/test-task-avito/](https://1ike.github.io/test-task-avito/) &nbsp; (react).  
+
+\* Для [нормальной работы с GitHub Pages](https://create-react-app.dev/docs/deployment/#notes-on-client-side-routing) была изменена стратегия маршрутизации в react-router-dom на hashHistory.
 
 &nbsp;
 
