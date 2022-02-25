@@ -70,7 +70,8 @@
             "TSTypeParameterInstantiation"
           ]
         }
-      ]
+      ],
+      "no-console": ["error", { "allow": ["warn", "error"] }]
     }
   },
   "browserslist": {
