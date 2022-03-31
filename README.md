@@ -43,6 +43,14 @@
 
 `yarn workspace @test-task-avito/react start`
 
+&nbsp;
+
+Для React также доступно развертывание приложения с использованием docker:
+
+`docker-compose up -d --build`
+
+После запуска контейнера с помощью этой команды откройте в браузере url [http://localhost:3001/](http://localhost:3001/)  
+
 
 &nbsp;
 
